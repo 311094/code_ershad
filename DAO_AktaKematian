@@ -1,0 +1,333 @@
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.File;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+import model.aktaKematian_model;
+import view.cetakAktaKematian;
+
+public class DAO_AktaKematian {
+    final protected String simpan = "insert into aktakematian(noAM, nik, wargaNegara, no,"
+                        + "aturanStbld, drh, tglBln, thn, nama, tempatLahir,"
+                        + "tglBlnLahir, thnLahir, anakKe, jk, suami, istri, drhPengeluaranAM, tglBlnPengeluaranAM,"
+                        + "thnPengeluaranAM, jabatan, namaPejabat, nip) values "
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    final protected String perbaharui = "update aktakematian set nik=?, wargaNegara=?, no=?,"
+                            + "aturanStbld=?, drh=?, tglBln=?, thn=?, nma=?, tempatLahir=?,"
+                            + "tglBlnLahir=?, thnLahir=?, anakKe=?, jk=?, suami=?, istri=?, "
+                            + "drhPengeluaranAM=?, tglBlnPengeluaranAM=?, thnPengeluaranAM=?, "
+                            + "jabatan=?, nmaPejabat=?, nip=? where noAM=? ;";
+    final protected String hapus = "delete from aktakematian where noAM=? ;";
+    final protected String pilih = "select * from aktakematian ;";
+    final protected String cari = "select * from aktakematian where noAM like ?";
+    final protected String batas = "select * from aktakematian limit ?,?";
+    final protected String jumlah = "select count(noAM) from aktakematian";
+    final protected String cetak = "select * from aktakematian ORDER BY noAM asc";
+    
+    public static Connection koneksi;
+    public Statement pernyataan;
+    public JasperPrint jasperPrint;
+    public JasperReport jasperReport;
+    public JasperDesign jasperDesign;
+    public Map<String, Object> map = new HashMap<>();
+    
+    public DAO_AktaKematian(){
+        koneksi=koneksiMySQL.getKoneksi();
+    }
+    
+    public void simpan(aktaKematian_model aktaKematianModel){
+        PreparedStatement pernyataanSiap = null;
+        
+        try{
+            pernyataanSiap=koneksi.prepareStatement(simpan);
+            pernyataanSiap.setString(1, aktaKematianModel.getNoAM());
+            pernyataanSiap.setString(2, aktaKematianModel.getNIK());
+            pernyataanSiap.setString(3, aktaKematianModel.getWargaNegara());
+            pernyataanSiap.setString(4, aktaKematianModel.getNo());
+            pernyataanSiap.setString(5, aktaKematianModel.getAturanStbld());
+            pernyataanSiap.setString(6, aktaKematianModel.getDaerah());
+            pernyataanSiap.setString(7, aktaKematianModel.getTanggalBulan());
+            pernyataanSiap.setString(8, aktaKematianModel.getTahun());
+            pernyataanSiap.setString(9, aktaKematianModel.getNama());
+            pernyataanSiap.setString(10, aktaKematianModel.getTempatLahir());
+            pernyataanSiap.setString(11, aktaKematianModel.getTanggalBulanLahir());
+            pernyataanSiap.setString(12, aktaKematianModel.getTahunLahir());
+            pernyataanSiap.setString(13, aktaKematianModel.getAnakKe());
+            pernyataanSiap.setString(14, aktaKematianModel.getJenisKelamin());
+            pernyataanSiap.setString(15, aktaKematianModel.getSuami());
+            pernyataanSiap.setString(16, aktaKematianModel.getIstri());
+            pernyataanSiap.setString(17, aktaKematianModel.getDaerahPengeluaranAM());
+            pernyataanSiap.setString(18, aktaKematianModel.getTanggalBulanPengeluaranAM());
+            pernyataanSiap.setString(19, aktaKematianModel.getTahunPengeluaranAM());
+            pernyataanSiap.setString(20, aktaKematianModel.getJabatan());
+            pernyataanSiap.setString(21, aktaKematianModel.getNamaPejabat());
+            pernyataanSiap.setString(22, aktaKematianModel.getNIP());
+            pernyataanSiap.executeUpdate();
+            ResultSet setHasil = pernyataanSiap.getResultSet();
+            JOptionPane.showMessageDialog(null, "Data Kematian Berhasil Tersimpan");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data Kematian Gagal Tersimpan");
+        }
+        finally
+        {
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public void ubah(aktaKematian_model aktaKematianModel){
+        PreparedStatement pernyataanSiap = null;
+        
+        try{
+            pernyataanSiap=koneksi.prepareStatement(perbaharui);
+            pernyataanSiap.setString(1, aktaKematianModel.getNoAM());
+            pernyataanSiap.setString(2, aktaKematianModel.getNIK());
+            pernyataanSiap.setString(3, aktaKematianModel.getWargaNegara());
+            pernyataanSiap.setString(4, aktaKematianModel.getNo());
+            pernyataanSiap.setString(5, aktaKematianModel.getAturanStbld());
+            pernyataanSiap.setString(6, aktaKematianModel.getDaerah());
+            pernyataanSiap.setString(7, aktaKematianModel.getTanggalBulan());
+            pernyataanSiap.setString(8, aktaKematianModel.getTahun());
+            pernyataanSiap.setString(9, aktaKematianModel.getNama());
+            pernyataanSiap.setString(10, aktaKematianModel.getTempatLahir());
+            pernyataanSiap.setString(11, aktaKematianModel.getTanggalBulanLahir());
+            pernyataanSiap.setString(12, aktaKematianModel.getTahunLahir());
+            pernyataanSiap.setString(13, aktaKematianModel.getAnakKe());
+            pernyataanSiap.setString(14, aktaKematianModel.getJenisKelamin());
+            pernyataanSiap.setString(15, aktaKematianModel.getSuami());
+            pernyataanSiap.setString(16, aktaKematianModel.getIstri());
+            pernyataanSiap.setString(17, aktaKematianModel.getDaerahPengeluaranAM());
+            pernyataanSiap.setString(18, aktaKematianModel.getTanggalBulanPengeluaranAM());
+            pernyataanSiap.setString(19, aktaKematianModel.getTahunPengeluaranAM());
+            pernyataanSiap.setString(20, aktaKematianModel.getJabatan());
+            pernyataanSiap.setString(21, aktaKematianModel.getNamaPejabat());
+            pernyataanSiap.setString(22, aktaKematianModel.getNIP());
+            pernyataanSiap.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data Kematian Berhasil Tersimpan");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data Kematian Gagal Tersimpan");
+        }
+        finally
+        {
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public void hapus(String noAK){
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(hapus);
+            pernyataanSiap.setString(1, noAK);
+            pernyataanSiap.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data Kematian Berhasil Terhapus");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data Kematian Gagal Terhapus");
+        }
+        finally{
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public List<aktaKematian_model>getDaftar(){
+        List<aktaKematian_model>daftarAktaKematian = null;
+        try{
+            daftarAktaKematian = new ArrayList<>();
+            pernyataan = koneksi.createStatement();
+            ResultSet setHasil = pernyataan.executeQuery(pilih);
+            while(setHasil.next()){
+                aktaKematian_model aktaKematianModel = new aktaKematian_model();
+                aktaKematianModel.setNoAM(setHasil.getString("noAm"));
+                aktaKematianModel.setNIK(setHasil.getString("nik"));
+                aktaKematianModel.setWargaNegara(setHasil.getString("wargaNegara"));
+                aktaKematianModel.setNo(setHasil.getString("no"));
+                aktaKematianModel.setAturanStbld(setHasil.getString("aturanStbld"));
+                aktaKematianModel.setDaerah(setHasil.getString("drh"));
+                aktaKematianModel.setTanggalBulan(setHasil.getString("tglBln"));
+                aktaKematianModel.setTahun(setHasil.getString("thn"));
+                aktaKematianModel.setNama(setHasil.getString("nama"));
+                aktaKematianModel.setTempatLahir(setHasil.getString("tempatLahir"));
+                aktaKematianModel.setTanggalBulanLahir(setHasil.getString("tglBlnLahir"));
+                aktaKematianModel.setTahunLahir(setHasil.getString("thnLahir"));
+                aktaKematianModel.setAnakKe(setHasil.getString("anakKe"));
+                aktaKematianModel.setJenisKelamin(setHasil.getString("jk"));
+                aktaKematianModel.setSuami(setHasil.getString("suami"));
+                aktaKematianModel.setIstri(setHasil.getString("istri"));
+                aktaKematianModel.setDaerahPengeluaranAM(setHasil.getString("drhPengeluaranAM"));
+                aktaKematianModel.setTanggalBulanPengeluaranAM(setHasil.getString("tglBlnPengeluaranAM"));
+                aktaKematianModel.setTahunPengeluaranAM(setHasil.getString("thnPengeluaranAM"));
+                aktaKematianModel.setJabatan(setHasil.getString("jabatan"));
+                aktaKematianModel.setNamaPejabat(setHasil.getString("namaPejabat"));
+                aktaKematianModel.setNIP(setHasil.getString("nip"));
+                daftarAktaKematian.add(aktaKematianModel);
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(DAO_AktaKematian.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarAktaKematian;
+    }
+    
+    public List<aktaKematian_model>getCariData(String noAM){
+        List<aktaKematian_model>daftarAktaKematian = null;
+        
+        try{
+            daftarAktaKematian = new ArrayList<>();
+            PreparedStatement pernyataanSiap = koneksi.prepareStatement(cari);
+            pernyataanSiap.setString(1, "%" + noAM + "%");
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                aktaKematian_model aktaKematianModel = new aktaKematian_model();
+                aktaKematianModel.setNoAM(setHasil.getString("noAm"));
+                aktaKematianModel.setNIK(setHasil.getString("nik"));
+                aktaKematianModel.setWargaNegara(setHasil.getString("wargaNegara"));
+                aktaKematianModel.setNo(setHasil.getString("no"));
+                aktaKematianModel.setAturanStbld(setHasil.getString("aturanStbld"));
+                aktaKematianModel.setDaerah(setHasil.getString("drh"));
+                aktaKematianModel.setTanggalBulan(setHasil.getString("tglBln"));
+                aktaKematianModel.setTahun(setHasil.getString("thn"));
+                aktaKematianModel.setNama(setHasil.getString("nama"));
+                aktaKematianModel.setTempatLahir(setHasil.getString("tempatLahir"));
+                aktaKematianModel.setTanggalBulanLahir(setHasil.getString("tglBlnLahir"));
+                aktaKematianModel.setTahunLahir(setHasil.getString("thnLahir"));
+                aktaKematianModel.setAnakKe(setHasil.getString("anakKe"));
+                aktaKematianModel.setJenisKelamin(setHasil.getString("jk"));
+                aktaKematianModel.setSuami(setHasil.getString("suami"));
+                aktaKematianModel.setIstri(setHasil.getString("istri"));
+                aktaKematianModel.setDaerahPengeluaranAM(setHasil.getString("drhPengeluaranAM"));
+                aktaKematianModel.setTanggalBulanPengeluaranAM(setHasil.getString("tglBlnPengeluaranAM"));
+                aktaKematianModel.setTahunPengeluaranAM(setHasil.getString("thnPengeluaranAM"));
+                aktaKematianModel.setJabatan(setHasil.getString("jabatan"));
+                aktaKematianModel.setNamaPejabat(setHasil.getString("namaPejabat"));
+                aktaKematianModel.setNIP(setHasil.getString("nip"));
+                daftarAktaKematian.add(aktaKematianModel);
+            }
+    }catch(SQLException ex){
+        Logger.getLogger(DAO_AktaKematian.class.getName()).log(Level.SEVERE, null, ex);
+    }
+        return daftarAktaKematian;
+    }
+    
+    public List<aktaKematian_model> getHalaman(int pageSize, int currentPage){
+        List<aktaKematian_model>daftarAktaKematian = null;
+        
+        try{
+            daftarAktaKematian = new ArrayList<>();
+            PreparedStatement pertanyaanSiap = koneksi.prepareStatement(batas);
+            pertanyaanSiap.setInt(1, currentPage*(pageSize-1));
+            pertanyaanSiap.setInt(2, pageSize);
+            ResultSet setHasil = pertanyaanSiap.executeQuery();
+            while(setHasil.next()){
+                aktaKematian_model aktaKematianModel = new aktaKematian_model();
+                aktaKematianModel.setNoAM(setHasil.getString("noAm"));
+                aktaKematianModel.setNIK(setHasil.getString("nik"));
+                aktaKematianModel.setWargaNegara(setHasil.getString("wargaNegara"));
+                aktaKematianModel.setNo(setHasil.getString("no"));
+                aktaKematianModel.setAturanStbld(setHasil.getString("aturanStbld"));
+                aktaKematianModel.setDaerah(setHasil.getString("drh"));
+                aktaKematianModel.setTanggalBulan(setHasil.getString("tglBln"));
+                aktaKematianModel.setTahun(setHasil.getString("thn"));
+                aktaKematianModel.setNama(setHasil.getString("nama"));
+                aktaKematianModel.setTempatLahir(setHasil.getString("tempatLahir"));
+                aktaKematianModel.setTanggalBulanLahir(setHasil.getString("tglBlnLahir"));
+                aktaKematianModel.setTahunLahir(setHasil.getString("thnLahir"));
+                aktaKematianModel.setAnakKe(setHasil.getString("anakKe"));
+                aktaKematianModel.setJenisKelamin(setHasil.getString("jk"));
+                aktaKematianModel.setSuami(setHasil.getString("suami"));
+                aktaKematianModel.setIstri(setHasil.getString("istri"));
+                aktaKematianModel.setDaerahPengeluaranAM(setHasil.getString("drhPengeluaranAM"));
+                aktaKematianModel.setTanggalBulanPengeluaranAM(setHasil.getString("tglBlnPengeluaranAM"));
+                aktaKematianModel.setTahunPengeluaranAM(setHasil.getString("thnPengeluaranAM"));
+                aktaKematianModel.setJabatan(setHasil.getString("jabatan"));
+                aktaKematianModel.setNamaPejabat(setHasil.getString("namaPejabat"));
+                aktaKematianModel.setNIP(setHasil.getString("nip"));
+                daftarAktaKematian.add(aktaKematianModel);
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarAktaKematian;
+    }
+     
+     public Integer jumlah(){
+         int jumlahBaris = 0;
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(jumlah);
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                jumlahBaris=setHasil.getInt("count(noAM)");
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }finally{
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+        return jumlahBaris;
+    }
+     
+     public void bacaNoAM(cetakAktaKematian cam){
+         try {
+             PreparedStatement pernyataanSiap = koneksi.prepareStatement(cetak);
+             ResultSet setHasil = pernyataanSiap.executeQuery();
+             while(setHasil.next()){
+                 cam.getTxtNoAM().setText(setHasil.getString("noAM"));
+             }
+         } catch (SQLException ex) {
+             Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+     
+     public void cetak(cetakAktaKematian cam){
+         try {
+             File file = new File("src/report/aktaKematian.jrxml");
+             jasperDesign = JRXmlLoader.load(file);
+             map.put("noAL", cam.getTxtNoAM().getText());
+             jasperReport = JasperCompileManager.compileReport(jasperDesign);
+             jasperPrint = JasperFillManager.fillReport(jasperReport, map, koneksi);
+             JasperViewer.viewReport(jasperPrint, false);
+         } catch (Exception ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+}
