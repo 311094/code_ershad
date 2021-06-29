@@ -1,0 +1,378 @@
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.File;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+import javax.swing.JOptionPane;
+import model.aktaPerceraian_model;
+import view.aktaPerceraian_view;
+import view.cetakAktaPerceraian;
+
+public class DAO_AktaPerceraian {
+    
+    final protected String simpan = "insert into aktaperceraian (noAC, nik, wargaNegara, noCR, aturanStbld,"
+                        + "drhPembuatanAC, tglBlnPembuatanAC, thnPembuatanAC, hasilPPN, no, tglBlnPPN,"
+                        + "thnPPN, nmaMantanSuami, nmaMantanIstri, drhPembuatanAK, noAK, tglBlnPembuatanAK,"
+                        + "thnPembuatanAK, drhPenerbitanAC, tglBlnPenerbitanAC, thnPenerbitanAC, jabatan, nmaPejabat,"
+                        + "nip) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    final protected String perbaharui = "update aktaperceraian set nik=?, wargaNegara=?, noCR=?, aturanStbld=?,"
+                            + "drhPembuatanAC=?, tglBlnPembuatanAC=?, thnPembuatanAC=?, hasilPPN=?, no=?,"
+                            + "tglBlnPPN=?, thnPPN=?, nmaMantanSuami=?, nmaMantanIstri=?, drhPembuatanAK=?,"
+                            + "noAK=?, tglBlnPembuatanAK=?, thnPembuatanAK=?, drhPenerbitanAC=?, tglBlnPenerbitanAC=?,"
+                            + "thnPenerbitanAC=?, jabatan=?, nmaPejabat=?, nip=? where noAC=? ;";
+    final protected String hapus = "delete from aktapenceraian where noAC=? ;";
+    final protected String pilih = "select * from aktaperceraian ;";
+    final protected String cari = "select * from aktaperceraian where noAC like ?";
+    final protected String batas = "select * from aktaperceraian limit ?,?";
+    final protected String jumlah = "select count(noAC) from aktaperceraian";
+    final protected String aktaKawin = "select * from aktaperkawinan ;";
+    final protected String noAktaKawin = "select * from aktaperkawinan where noAK = '";
+    final protected String cetak = "select * from aktaperceraian ORDER BY noAC asc";
+    
+    public static Connection koneksi;
+    public Statement pernyataan;
+    public JasperPrint jasperPrint;
+    public JasperReport jasperReport;
+    public JasperDesign jasperDesign;
+    public Map<String, Object> map = new HashMap<>();
+    
+    public DAO_AktaPerceraian(){
+        koneksi=koneksiMySQL.getKoneksi();
+    }
+    
+    public void simpan(aktaPerceraian_model aktaPerceraianModel){
+        
+        PreparedStatement pernyataanSiap = null;
+        try
+        {
+        pernyataanSiap=koneksi.prepareStatement(simpan);
+        pernyataanSiap.setString(1, aktaPerceraianModel.getNoAC());
+        pernyataanSiap.setString(2, aktaPerceraianModel.getNik());
+        pernyataanSiap.setString(3, aktaPerceraianModel.getWargaNegara());
+        pernyataanSiap.setString(4, aktaPerceraianModel.getNoCR());
+        pernyataanSiap.setString(5, aktaPerceraianModel.getAturanStbld());
+        pernyataanSiap.setString(6, aktaPerceraianModel.getDaerahPembuatanAC());
+        pernyataanSiap.setString(7, aktaPerceraianModel.getTanggalBulanPembuatanAC());
+        pernyataanSiap.setString(8, aktaPerceraianModel.getTahunPembuatanAC());
+        pernyataanSiap.setString(9, aktaPerceraianModel.getKeputusanPN());
+        pernyataanSiap.setString(10, aktaPerceraianModel.getNo());
+        pernyataanSiap.setString(11, aktaPerceraianModel.getTanggalBulanPPN());
+        pernyataanSiap.setString(12, aktaPerceraianModel.getTahunPPN());
+        pernyataanSiap.setString(13, aktaPerceraianModel.getNamaMantanSuami());
+        pernyataanSiap.setString(14, aktaPerceraianModel.getNamaMantanIstri());
+        pernyataanSiap.setString(15, aktaPerceraianModel.getDaerahPembuatanAK());
+        pernyataanSiap.setString(16, aktaPerceraianModel.getNoAK());
+        pernyataanSiap.setString(17, aktaPerceraianModel.getTanggalBulanPembuatanAK());
+        pernyataanSiap.setString(18, aktaPerceraianModel.getTahunPembuatanAK());
+        pernyataanSiap.setString(19, aktaPerceraianModel.getDaerahPengeluaranAC());
+        pernyataanSiap.setString(20, aktaPerceraianModel.getTanggalBulanPengeluaranAC());
+        pernyataanSiap.setString(21, aktaPerceraianModel.getTahunPengeluaranAC());
+        pernyataanSiap.setString(22, aktaPerceraianModel.getJabatan());
+        pernyataanSiap.setString(23, aktaPerceraianModel.getNamaPejabat());
+        pernyataanSiap.setString(24, aktaPerceraianModel.getNIP());
+        pernyataanSiap.executeUpdate();
+        ResultSet setHasil = pernyataanSiap.getResultSet();
+        JOptionPane.showMessageDialog(null, "Data Perceraian Berhasil Tersimpan");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data Gagal Tersimpan");
+        }
+        finally
+        {
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public void ubah(aktaPerceraian_model aktaPerceraianModel){
+         PreparedStatement pernyataanSiap = null;
+        try
+        {
+        pernyataanSiap.setString(1, aktaPerceraianModel.getNoAC());
+        pernyataanSiap.setString(2, aktaPerceraianModel.getNik());
+        pernyataanSiap.setString(3, aktaPerceraianModel.getWargaNegara());
+        pernyataanSiap.setString(4, aktaPerceraianModel.getNoCR());
+        pernyataanSiap.setString(5, aktaPerceraianModel.getAturanStbld());
+        pernyataanSiap.setString(6, aktaPerceraianModel.getDaerahPembuatanAC());
+        pernyataanSiap.setString(7, aktaPerceraianModel.getTanggalBulanPembuatanAC());
+        pernyataanSiap.setString(8, aktaPerceraianModel.getTahunPembuatanAC());
+        pernyataanSiap.setString(9, aktaPerceraianModel.getKeputusanPN());
+        pernyataanSiap.setString(10, aktaPerceraianModel.getNo());
+        pernyataanSiap.setString(11, aktaPerceraianModel.getTanggalBulanPPN());
+        pernyataanSiap.setString(12, aktaPerceraianModel.getTahunPPN());
+        pernyataanSiap.setString(13, aktaPerceraianModel.getNamaMantanSuami());
+        pernyataanSiap.setString(14, aktaPerceraianModel.getNamaMantanIstri());
+        pernyataanSiap.setString(15, aktaPerceraianModel.getDaerahPembuatanAK());
+        pernyataanSiap.setString(16, aktaPerceraianModel.getNoAK());
+        pernyataanSiap.setString(17, aktaPerceraianModel.getTanggalBulanPembuatanAK());
+        pernyataanSiap.setString(18, aktaPerceraianModel.getTahunPembuatanAK());
+        pernyataanSiap.setString(19, aktaPerceraianModel.getDaerahPengeluaranAC());
+        pernyataanSiap.setString(20, aktaPerceraianModel.getTanggalBulanPengeluaranAC());
+        pernyataanSiap.setString(21, aktaPerceraianModel.getTahunPengeluaranAC());
+        pernyataanSiap.setString(22, aktaPerceraianModel.getJabatan());
+        pernyataanSiap.setString(23, aktaPerceraianModel.getNamaPejabat());
+        pernyataanSiap.setString(24, aktaPerceraianModel.getNIP());
+        pernyataanSiap.executeUpdate();
+        JOptionPane.showMessageDialog(null, "Data Perceraian Berhasil Tersimpan");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data Gagal Tersimpan");
+        }
+        finally
+        {
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public void hapus(String noAC){
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(hapus);
+            pernyataanSiap.setString(1, noAC);
+            pernyataanSiap.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data Gagal Dihapus");
+        }
+        finally{
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public List<aktaPerceraian_model> getDaftar(){
+        List<aktaPerceraian_model> daftarAktaPerceraian = null;
+        try{
+            daftarAktaPerceraian = new ArrayList<>();
+            pernyataan = koneksi.createStatement();
+            ResultSet setHasil = pernyataan.executeQuery(pilih);
+            while(setHasil.next()){
+                aktaPerceraian_model aktaPerceraianModel = new aktaPerceraian_model();
+                aktaPerceraianModel.setNoAC(setHasil.getString("noAC"));
+                aktaPerceraianModel.setNik(setHasil.getString("nik"));
+                aktaPerceraianModel.setWargaNegara(setHasil.getString("wargaNegara"));
+                aktaPerceraianModel.setNoCR(setHasil.getString("noCR"));
+                aktaPerceraianModel.setAturanStbld(setHasil.getString("aturanStbld"));
+                aktaPerceraianModel.setDaerahPembuatanAC(setHasil.getString("drhPembuatanAC"));
+                aktaPerceraianModel.setTanggalPembuatanAC(setHasil.getString("tglBlnPembuatanAC"));
+                aktaPerceraianModel.setTahunPembuatanAC(setHasil.getString("thnPembuatanAC"));
+                aktaPerceraianModel.setKeputusanPN(setHasil.getString("hasilPPN"));
+                aktaPerceraianModel.setNo(setHasil.getString("no"));
+                aktaPerceraianModel.setTanggalBulanPPN(setHasil.getString("tglBlnPPN"));
+                aktaPerceraianModel.setTahunPPN(setHasil.getString("thnPPN"));
+                aktaPerceraianModel.setNamaMantanSuami(setHasil.getString("nmaMantanSuami"));
+                aktaPerceraianModel.setNamaMantanIstri(setHasil.getString("nmaMantanIstri"));
+                aktaPerceraianModel.setDaerahPembuatanAK(setHasil.getString("drhPembuatanAK"));
+                aktaPerceraianModel.setNoAK(setHasil.getString("noAK"));
+                aktaPerceraianModel.setTanggalBulanPembuatanAK(setHasil.getString("tglBlnPembuatanAK"));
+                aktaPerceraianModel.setTahunPembuatanAK(setHasil.getString("thnPembuatanAK"));
+                aktaPerceraianModel.setDaerahPengeluaranAC(setHasil.getString("drhPenerbitanAC"));
+                aktaPerceraianModel.setTanggalBulanPengeluaranAC(setHasil.getString("tglBlnPenerbitanAC"));
+                aktaPerceraianModel.setTahunPengeluaranAC(setHasil.getString("thnPenerbitanAC"));
+                aktaPerceraianModel.setJabatan(setHasil.getString("jabatan"));
+                aktaPerceraianModel.setNamaPejabat(setHasil.getString("nmaPejabat"));
+                aktaPerceraianModel.setNIP(setHasil.getString("nip"));
+                daftarAktaPerceraian.add(aktaPerceraianModel);
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(DAO_AktaPerceraian.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarAktaPerceraian;
+    }
+    
+    public List<aktaPerceraian_model> getCariData(String noAC){
+        List<aktaPerceraian_model> daftarAktaPerceraian = null;
+        
+        try{
+            daftarAktaPerceraian = new ArrayList<>();
+            PreparedStatement pernyataanSiap = koneksi.prepareStatement(cari);
+            pernyataanSiap.setString(1, "%" + noAC + "%");
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                aktaPerceraian_model aktaPerceraianModel = new aktaPerceraian_model();
+                aktaPerceraianModel.setNoAC(setHasil.getString("noAC"));
+                aktaPerceraianModel.setNik(setHasil.getString("nik"));
+                aktaPerceraianModel.setWargaNegara(setHasil.getString("wargaNegara"));
+                aktaPerceraianModel.setNoCR(setHasil.getString("noCR"));
+                aktaPerceraianModel.setAturanStbld(setHasil.getString("aturanStbld"));
+                aktaPerceraianModel.setDaerahPembuatanAC(setHasil.getString("drhPembuatanAC"));
+                aktaPerceraianModel.setTanggalPembuatanAC(setHasil.getString("tglBlnPembuatanAC"));
+                aktaPerceraianModel.setTahunPembuatanAC(setHasil.getString("thnPembuatanAC"));
+                aktaPerceraianModel.setKeputusanPN(setHasil.getString("hasilPPN"));
+                aktaPerceraianModel.setNo(setHasil.getString("no"));
+                aktaPerceraianModel.setTanggalBulanPPN(setHasil.getString("tglBlnPPN"));
+                aktaPerceraianModel.setTahunPPN(setHasil.getString("thnPPN"));
+                aktaPerceraianModel.setNamaMantanSuami(setHasil.getString("nmaMantanSuami"));
+                aktaPerceraianModel.setNamaMantanIstri(setHasil.getString("nmaMantanIstri"));
+                aktaPerceraianModel.setDaerahPembuatanAK(setHasil.getString("drhPembuatanAK"));
+                aktaPerceraianModel.setNoAK(setHasil.getString("noAK"));
+                aktaPerceraianModel.setTanggalBulanPembuatanAK(setHasil.getString("tglBlnPembuatanAK"));
+                aktaPerceraianModel.setTahunPembuatanAK(setHasil.getString("thnPembuatanAK"));
+                aktaPerceraianModel.setDaerahPengeluaranAC(setHasil.getString("drhPenerbitanAC"));
+                aktaPerceraianModel.setTanggalBulanPengeluaranAC(setHasil.getString("tglBlnPenerbitanAC"));
+                aktaPerceraianModel.setTahunPengeluaranAC(setHasil.getString("thnPenerbitanAC"));
+                aktaPerceraianModel.setJabatan(setHasil.getString("jabatan"));
+                aktaPerceraianModel.setNamaPejabat(setHasil.getString("nmaPejabat"));
+                aktaPerceraianModel.setNIP(setHasil.getString("nip"));
+                daftarAktaPerceraian.add(aktaPerceraianModel);
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarAktaPerceraian;
+    }
+    
+    public List<aktaPerceraian_model> getHalaman(int pageSize, int currentPage){
+        List<aktaPerceraian_model>daftarAktaPerceraian = null;
+        
+        try{
+            daftarAktaPerceraian = new ArrayList<>();
+            PreparedStatement pertanyaanSiap = koneksi.prepareStatement(batas);
+            pertanyaanSiap.setInt(1, currentPage*(pageSize-1));
+            pertanyaanSiap.setInt(2, pageSize);
+            ResultSet setHasil = pertanyaanSiap.executeQuery();
+            while(setHasil.next()){
+                aktaPerceraian_model aktaPerceraianModel = new aktaPerceraian_model();
+                aktaPerceraianModel.setNoAC(setHasil.getString("noAC"));
+                aktaPerceraianModel.setNik(setHasil.getString("nik"));
+                aktaPerceraianModel.setWargaNegara(setHasil.getString("wargaNegara"));
+                aktaPerceraianModel.setNoCR(setHasil.getString("noCR"));
+                aktaPerceraianModel.setAturanStbld(setHasil.getString("aturanStbld"));
+                aktaPerceraianModel.setDaerahPembuatanAC(setHasil.getString("drhPembuatanAC"));
+                aktaPerceraianModel.setTanggalPembuatanAC(setHasil.getString("tglBlnPembuatanAC"));
+                aktaPerceraianModel.setTahunPembuatanAC(setHasil.getString("thnPembuatanAC"));
+                aktaPerceraianModel.setKeputusanPN(setHasil.getString("hasilPPN"));
+                aktaPerceraianModel.setNo(setHasil.getString("no"));
+                aktaPerceraianModel.setTanggalBulanPPN(setHasil.getString("tglBlnPPN"));
+                aktaPerceraianModel.setTahunPPN(setHasil.getString("thnPPN"));
+                aktaPerceraianModel.setNamaMantanSuami(setHasil.getString("nmaMantanSuami"));
+                aktaPerceraianModel.setNamaMantanIstri(setHasil.getString("nmaMantanIstri"));
+                aktaPerceraianModel.setDaerahPembuatanAK(setHasil.getString("drhPembuatanAK"));
+                aktaPerceraianModel.setNoAK(setHasil.getString("noAK"));
+                aktaPerceraianModel.setTanggalBulanPembuatanAK(setHasil.getString("tglBlnPembuatanAK"));
+                aktaPerceraianModel.setTahunPembuatanAK(setHasil.getString("thnPembuatanAK"));
+                aktaPerceraianModel.setDaerahPengeluaranAC(setHasil.getString("drhPenerbitanAC"));
+                aktaPerceraianModel.setTanggalBulanPengeluaranAC(setHasil.getString("tglBlnPenerbitanAC"));
+                aktaPerceraianModel.setTahunPengeluaranAC(setHasil.getString("thnPenerbitanAC"));
+                aktaPerceraianModel.setJabatan(setHasil.getString("jabatan"));
+                aktaPerceraianModel.setNamaPejabat(setHasil.getString("nmaPejabat"));
+                aktaPerceraianModel.setNIP(setHasil.getString("nip"));
+                daftarAktaPerceraian.add(aktaPerceraianModel);
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarAktaPerceraian;
+    }
+     
+     public int jumlah(){
+         int jumlahBaris = 0;
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(jumlah);
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                jumlahBaris=setHasil.getInt("count(noAC)");
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }finally{
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+        return jumlahBaris;
+    }
+     
+       
+     public String tampilItemAK(aktaPerceraian_view ceraiView){
+         
+         try{
+             pernyataan = koneksi.createStatement();
+             String noAK = noAktaKawin+
+             ceraiView.getCboNoAK().getSelectedItem()+"'";
+             ResultSet setHasil = pernyataan.executeQuery(noAK);
+             setHasil.absolute(1);
+             ceraiView.getTxtDaerahPembuatanAK().setText(setHasil.getString("daerahKeluar"));
+             ceraiView.getTxtTanggalBulanPembuatanAK().setText(setHasil.getString("tglBlnKeluar"));
+             ceraiView.getTxtTahunPembuatanAK().setText(setHasil.getString("tahunKeluar"));
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+        }
+     
+     public String tampilComboAK(aktaPerceraian_view aktaCeraiView){
+         try{
+             pernyataan = koneksi.createStatement();
+             ResultSet rs = pernyataan.executeQuery(aktaKawin);
+             while(rs.next()){
+                 aktaCeraiView.getCboNoAK().addItem(rs.getString("noAK"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+     }
+     
+     public void bacaNoAC(cetakAktaPerceraian cac){
+         try {
+             PreparedStatement pernyataanSiap = koneksi.prepareStatement(cetak);
+             ResultSet setHasil = pernyataanSiap.executeQuery();
+             while(setHasil.next()){
+                 cac.getTxtNoAC().setText(setHasil.getString("noAC"));
+             }
+         } catch (SQLException ex) {
+             Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+     
+     public void cetak(cetakAktaPerceraian cac){
+         try {
+             File file = new File("src/report/aktaPerceraian.jrxml");
+             jasperDesign = JRXmlLoader.load(file);
+             map.put("noAC", cac.getTxtNoAC().getText());
+             jasperReport = JasperCompileManager.compileReport(jasperDesign);
+             jasperPrint = JasperFillManager.fillReport(jasperReport, map, koneksi);
+             JasperViewer.viewReport(jasperPrint, false);
+         } catch (Exception ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+}
