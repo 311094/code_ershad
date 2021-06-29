@@ -1,0 +1,486 @@
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.File;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+import view.cetakArsipAkta;
+import model.arsipAkta_model;
+import view.arsipAkta_View;
+
+public class DAO_ArsipAkta {
+    final protected String simpan = "insert into arsipakta(kode, noBerkas, tglBerkas, kategori, lampiran, noAL, nikAL, "
+            + "tempTerbitAL, tglTerbitAL, thnTerbitAL, noAM, nikAM, tempTerbitAM, tglTerbitAM, thnTerbitAM, noAK, "
+            + "nikAK, tempTerbitAK, tglTerbitAK, thnTerbitAK, noAC, nikAC, tempTerbitAC, tglTerbitAC, thnTerbitAC, ket)"
+            + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    final protected String perbaharui = "update arsipakta set noBerkas=?, tglBerkas=?, kategori=?, lampiran=?, noAL=?, nikAL=?"
+            + ", tempTerbitAL=?, tglTerbitAL=?, thnTerbitAL=?, noAM=?, nikAM=?, tempTerbitAM=?, tglTerbitAM=?, thnTerbitAM=?"
+            + ", noAK=?, nikAK=?, tempTerbitAK=?, tglTerbitAK=?, thnTerbitAK=?, noAC=?, nikAC=?, tempTerbitAC=?, tglTerbitAC=?"
+            + ", thnTerbitAC=?, ket=? where kode=? ;";
+    final protected String hapus = "delete from arsipakta where kode=?;";
+    final protected String pilih = "select * from arsipakta";
+    final protected String cari = "select * from arsipakta where kode like ?";
+    final protected String autoKode = "select * from arsipakta ORDER BY kode DESC";
+    final protected String aktaLahir = "select * from aktakelahiran ;";
+    final protected String noAktaLahir = "select * from aktakelahiran where noAL = '";
+    final protected String aktaMati = "select * from aktakematian ;";
+    final protected String noAktaMati = "select * from aktakematian where noAM = '";
+    final protected String aktaKawin = "select * from aktaperkawinan ;";
+    final protected String noAktaKawin = "select * from aktaperkawinan where noAK = '";
+    final protected String aktaCerai = "select * from aktaperceraian ;";
+    final protected String noAktaCerai = "select * from aktaperceraian where noAC = '";
+    final protected String cetak = "select * from arsipakta ORDER BY kode asc";
+    
+    private static Connection koneksi;
+    private Statement pernyataan;
+    public JasperPrint jasperPrint;
+    public JasperReport jasperReport;
+    public JasperDesign jasperDesign;
+    public Map<String, Object> map = new HashMap<>();
+    
+    public DAO_ArsipAkta(){
+        koneksi=koneksiMySQL.getKoneksi();
+    }
+    
+    public void simpan(arsipAkta_model arsipAktaModel){
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(simpan);
+            pernyataanSiap.setString(1, arsipAktaModel.getKode());
+            pernyataanSiap.setString(2, arsipAktaModel.getNoBerkas());
+            pernyataanSiap.setString(3, arsipAktaModel.getTanggalBerkas());
+            pernyataanSiap.setString(4, arsipAktaModel.getKategori());
+            pernyataanSiap.setString(5, arsipAktaModel.getLampiran());
+            pernyataanSiap.setString(6, arsipAktaModel.getNoAktaLahir());
+            pernyataanSiap.setString(7, arsipAktaModel.getNIKAktaLahir());
+            pernyataanSiap.setString(8, arsipAktaModel.getTempatTerbitAktaLahir());
+            pernyataanSiap.setString(9, arsipAktaModel.getTanggalBulanTerbitAktaLahir());
+            pernyataanSiap.setString(10, arsipAktaModel.getTahunTerbitAktaLahir());
+            pernyataanSiap.setString(11, arsipAktaModel.getNoAktaMati());
+            pernyataanSiap.setString(12, arsipAktaModel.getNIKAktaMati());
+            pernyataanSiap.setString(13, arsipAktaModel.getTempatTerbitAktaMati());
+            pernyataanSiap.setString(14, arsipAktaModel.getTanggalBulanTerbitAktaMati());
+            pernyataanSiap.setString(15, arsipAktaModel.getTahunTerbitAktaMati());
+            pernyataanSiap.setString(16, arsipAktaModel.getNoAktaKawin());
+            pernyataanSiap.setString(17, arsipAktaModel.getNIKAktaKawin());
+            pernyataanSiap.setString(18, arsipAktaModel.getTempatTerbitAktaKawin());
+            pernyataanSiap.setString(19, arsipAktaModel.getTanggalBulanTerbitAktaKawin());
+            pernyataanSiap.setString(20, arsipAktaModel.getTahunTerbitAktaKawin());
+            pernyataanSiap.setString(21, arsipAktaModel.getNoAktaCerai());
+            pernyataanSiap.setString(22, arsipAktaModel.getNIKAktaCerai());
+            pernyataanSiap.setString(23, arsipAktaModel.getTempatTerbitAktaCerai());
+            pernyataanSiap.setString(24, arsipAktaModel.getTanggalBulanTerbitAktaCerai());
+            pernyataanSiap.setString(25, arsipAktaModel.getTahunTerbitAktaCerai());
+            pernyataanSiap.setString(26, arsipAktaModel.getKeterangan());
+            pernyataanSiap.executeUpdate();
+            ResultSet setHasil = pernyataanSiap.getResultSet();
+            JOptionPane.showMessageDialog(null, "Data Arsip Akta Berhasil Tersimpan");
+    }catch(SQLException ex){
+        ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data gagal tersimpan");
+    }
+        finally
+        {
+            try
+        {
+            pernyataanSiap.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        }
+    }
+    
+    public void ubah(arsipAkta_model arsipAktaModel){
+        PreparedStatement pernyataanSiap = null;
+        
+        try {
+            pernyataanSiap = koneksi.prepareStatement(perbaharui);
+            pernyataanSiap.setString(1, arsipAktaModel.getKode());
+            pernyataanSiap.setString(2, arsipAktaModel.getNoBerkas());
+            pernyataanSiap.setString(3, arsipAktaModel.getTanggalBerkas());
+            pernyataanSiap.setString(4, arsipAktaModel.getKategori());
+            pernyataanSiap.setString(5, arsipAktaModel.getLampiran());
+            pernyataanSiap.setString(6, arsipAktaModel.getNoAktaLahir());
+            pernyataanSiap.setString(7, arsipAktaModel.getNIKAktaLahir());
+            pernyataanSiap.setString(8, arsipAktaModel.getTempatTerbitAktaLahir());
+            pernyataanSiap.setString(9, arsipAktaModel.getTanggalBulanTerbitAktaLahir());
+            pernyataanSiap.setString(10, arsipAktaModel.getTahunTerbitAktaLahir());
+            pernyataanSiap.setString(11, arsipAktaModel.getNoAktaMati());
+            pernyataanSiap.setString(12, arsipAktaModel.getNIKAktaMati());
+            pernyataanSiap.setString(13, arsipAktaModel.getTempatTerbitAktaMati());
+            pernyataanSiap.setString(14, arsipAktaModel.getTanggalBulanTerbitAktaMati());
+            pernyataanSiap.setString(15, arsipAktaModel.getTahunTerbitAktaMati());
+            pernyataanSiap.setString(16, arsipAktaModel.getNoAktaKawin());
+            pernyataanSiap.setString(17, arsipAktaModel.getNIKAktaKawin());
+            pernyataanSiap.setString(18, arsipAktaModel.getTempatTerbitAktaKawin());
+            pernyataanSiap.setString(19, arsipAktaModel.getTanggalBulanTerbitAktaKawin());
+            pernyataanSiap.setString(20, arsipAktaModel.getTahunTerbitAktaKawin());
+            pernyataanSiap.setString(21, arsipAktaModel.getNoAktaCerai());
+            pernyataanSiap.setString(22, arsipAktaModel.getNIKAktaCerai());
+            pernyataanSiap.setString(23, arsipAktaModel.getTempatTerbitAktaCerai());
+            pernyataanSiap.setString(24, arsipAktaModel.getTanggalBulanTerbitAktaCerai());
+            pernyataanSiap.setString(25, arsipAktaModel.getTahunTerbitAktaCerai());
+            pernyataanSiap.setString(26, arsipAktaModel.getKeterangan());
+            pernyataanSiap.executeUpdate();
+            //ResultSet setHasil = pernyataanSiap.getResultSet();
+            JOptionPane.showMessageDialog(null, "Data Kelahiran Berhasil di Perbaharui");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data gagal di perbaharui");
+        }
+        finally
+        {
+            try
+        {
+            pernyataanSiap.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        }
+    }
+    
+    public void hapus(String kode){
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(hapus);
+            pernyataanSiap.setString(1, kode);
+            pernyataanSiap.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data gagal dihapus");
+        }finally{
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public List<arsipAkta_model> getDaftar(){
+        List<arsipAkta_model> daftarStaffModel = null;
+        try {
+            daftarStaffModel = new ArrayList<>();
+            pernyataan = koneksi.createStatement();
+            ResultSet setHasil = pernyataan.executeQuery(pilih);
+            while(setHasil.next()){
+                arsipAkta_model arsipAktaModel = new arsipAkta_model();
+                arsipAktaModel.setKode(setHasil.getString("kode"));
+                arsipAktaModel.setNoBerkas(setHasil.getString("noBerkas"));
+                arsipAktaModel.setTanggalBerkas(setHasil.getString("tglberkas"));
+                arsipAktaModel.setKategori(setHasil.getString("kategori"));
+                arsipAktaModel.setLampiran(setHasil.getString("lampiran"));
+                arsipAktaModel.setNoAktaLahir(setHasil.getString("noAL"));
+                arsipAktaModel.setNIKAktaLahir(setHasil.getString("nikAL"));
+                arsipAktaModel.setTempatTerbitAktaLahir(setHasil.getString("tempTerbitAL"));
+                arsipAktaModel.setTanggalBulanTerbitAktaLahir(setHasil.getString("tglTerbitAL"));
+                arsipAktaModel.setTahunTerbitAktaLahir(setHasil.getString("thnTerbitAL"));
+                arsipAktaModel.setNoAktaMati(setHasil.getString("noAM"));
+                arsipAktaModel.setNIKAktaMati(setHasil.getString("nikAM"));
+                arsipAktaModel.setTempatTerbitAktaMati(setHasil.getString("tempTerbitAM"));
+                arsipAktaModel.setTanggalBulanTerbitAktaMati(setHasil.getString("tglTerbitAM"));
+                arsipAktaModel.setTahunTerbitAktaMati(setHasil.getString("thnTerbitAM"));
+                arsipAktaModel.setNoAktaKawin(setHasil.getString("noAK"));
+                arsipAktaModel.setNIKAktaKawin(setHasil.getString("nikAK"));
+                arsipAktaModel.setTempatTerbitAktaKawin(setHasil.getString("tempTerbitAK"));
+                arsipAktaModel.setTanggalBulanTerbitAktaKawin(setHasil.getString("tglTerbitAK"));
+                arsipAktaModel.setTahunTerbitAktaKawin(setHasil.getString("thnTerbitAK"));
+                arsipAktaModel.setNoAktaCerai(setHasil.getString("noAC"));
+                arsipAktaModel.setNIKAktaCerai(setHasil.getString("nikAC"));
+                arsipAktaModel.setTempatTerbitAktaCerai(setHasil.getString("tempTerbitAC"));
+                arsipAktaModel.setTanggalBulanTerbitAktaCerai(setHasil.getString("tglTerbitAC"));
+                arsipAktaModel.setTahunTerbitAktaCerai(setHasil.getString("thnTerbitAC"));
+                arsipAktaModel.setKeterangan(setHasil.getString("ket"));
+                daftarStaffModel.add(arsipAktaModel);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(arsipAkta_model.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarStaffModel;
+    }
+    
+    public List<arsipAkta_model> getCariData(String kode){
+        List<arsipAkta_model> daftarUserModel = null;
+        
+        try {
+            daftarUserModel = new ArrayList<>();
+            PreparedStatement pernyataanSiap = koneksi.prepareStatement(cari);
+            pernyataanSiap.setString(1, "%" + kode + "%");
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                arsipAkta_model arsipAktaModel = new arsipAkta_model();
+                arsipAktaModel.setKode(setHasil.getString("kode"));
+                arsipAktaModel.setNoBerkas(setHasil.getString("noBerkas"));
+                arsipAktaModel.setTanggalBerkas(setHasil.getString("tglberkas"));
+                arsipAktaModel.setKategori(setHasil.getString("kategori"));
+                arsipAktaModel.setLampiran(setHasil.getString("lampiran"));
+                arsipAktaModel.setNoAktaLahir(setHasil.getString("noAL"));
+                arsipAktaModel.setNIKAktaLahir(setHasil.getString("nikAL"));
+                arsipAktaModel.setTempatTerbitAktaLahir(setHasil.getString("tempTerbitAL"));
+                arsipAktaModel.setTanggalBulanTerbitAktaLahir(setHasil.getString("tglTerbitAL"));
+                arsipAktaModel.setTahunTerbitAktaLahir(setHasil.getString("thnTerbitAL"));
+                arsipAktaModel.setNoAktaMati(setHasil.getString("noAM"));
+                arsipAktaModel.setNIKAktaMati(setHasil.getString("nikAM"));
+                arsipAktaModel.setTempatTerbitAktaMati(setHasil.getString("tempTerbitAM"));
+                arsipAktaModel.setTanggalBulanTerbitAktaMati(setHasil.getString("tglTerbitAM"));
+                arsipAktaModel.setTahunTerbitAktaMati(setHasil.getString("thnTerbitAM"));
+                arsipAktaModel.setNoAktaKawin(setHasil.getString("noAK"));
+                arsipAktaModel.setNIKAktaKawin(setHasil.getString("nikAK"));
+                arsipAktaModel.setTempatTerbitAktaKawin(setHasil.getString("tempTerbitAK"));
+                arsipAktaModel.setTanggalBulanTerbitAktaKawin(setHasil.getString("tglTerbitAK"));
+                arsipAktaModel.setTahunTerbitAktaKawin(setHasil.getString("thnTerbitAK"));
+                arsipAktaModel.setNoAktaCerai(setHasil.getString("noAC"));
+                arsipAktaModel.setNIKAktaCerai(setHasil.getString("nikAC"));
+                arsipAktaModel.setTempatTerbitAktaCerai(setHasil.getString("tempTerbitAC"));
+                arsipAktaModel.setTanggalBulanTerbitAktaCerai(setHasil.getString("tglTerbitAC"));
+                arsipAktaModel.setTahunTerbitAktaCerai(setHasil.getString("thnTerbitAC"));
+                arsipAktaModel.setKeterangan(setHasil.getString("ket"));
+                daftarUserModel.add(arsipAktaModel);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarUserModel;
+    }
+    
+     public void tampilKode(arsipAkta_View arsipView){
+     
+         try{
+             
+             pernyataan = koneksi.createStatement();
+             ResultSet setHasil = pernyataan.executeQuery(autoKode);
+              if(setHasil.next()){
+                 String kode = setHasil.getString("kode").substring(1);
+                 String ak = "" + (Integer.parseInt(kode)+1);
+                 String Nol = "";
+                 
+                 if(ak.length()==1)
+                     {Nol = "000";}
+                 else if(ak.length()==2)
+                     {Nol = "00";}
+                 else if(ak.length()==3)
+                     {Nol = "0";}
+                 else if(ak.length()==4)
+                     {Nol = "";}
+                     arsipView.getTxtKode().setText("C"+Nol+ak);
+                }else{
+                     arsipView.getTxtKode().setText("C0001");
+              }
+                 setHasil.close();
+             
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     }
+     
+     public String tampilNoAktaLahir(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             ResultSet setHasil = pernyataan.executeQuery(aktaLahir);
+             while(setHasil.next()){
+                 arsipView.getCboNoAL().addItem(setHasil.getString("noAL"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+     } 
+    
+     public String tampilItemAL(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             String noAL = noAktaLahir +
+                     arsipView.getCboNoAL().getSelectedItem()+"'";
+             ResultSet setHasil = pernyataan.executeQuery(noAL);
+             while(setHasil.next()){
+             arsipView.getTxtNIKAL().setText(setHasil.getString("nikAL"));
+             arsipView.getTxtTempAL().setText(setHasil.getString("drhPembuatanAL"));
+             arsipView.getTxtTglTerbitAL().setText(setHasil.getString("tglBlnPembuatanAL"));
+             arsipView.getTxtThnTerbitAL().setText(setHasil.getString("thnPembuatanAL"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+        }
+     
+     public String tampilNoAktaMati(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             ResultSet setHasil = pernyataan.executeQuery(aktaMati);
+             while(setHasil.next()){
+                 arsipView.getCboNoAM().addItem(setHasil.getString("noAM"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+     } 
+    
+     public String tampilItemAM(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             String noAM = noAktaMati +
+                     arsipView.getCboNoAM().getSelectedItem()+"'";
+             ResultSet setHasil = pernyataan.executeQuery(noAM);
+             while(setHasil.next()){
+             arsipView.getTxtNIKAM().setText(setHasil.getString("nik"));
+             arsipView.getTxtTempAM().setText(setHasil.getString("drhPengeluaranAM"));
+             arsipView.getTxtTglTerbitAM().setText(setHasil.getString("tglBlnPengeluaranAM"));
+             arsipView.getTxtThnTerbitAM().setText(setHasil.getString("thnPengeluaranAM"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+        }
+     
+      public String tampilNoAktKawin(arsipAkta_View arsipView){
+      
+         try{       
+             pernyataan = koneksi.createStatement();
+             ResultSet setHasil = pernyataan.executeQuery(aktaKawin);
+             while(setHasil.next()){
+                 arsipView.getCboNoAK().addItem(setHasil.getString("noAK"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+     } 
+     
+      public String tampilItemAK(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             String noAK = noAktaKawin +
+                     arsipView.getCboNoAK().getSelectedItem()+"'";
+             ResultSet setHasil = pernyataan.executeQuery(noAK);
+             while(setHasil.next()){
+             arsipView.getTxtNIKAK().setText(setHasil.getString("nik"));
+             arsipView.getTxtTempAK().setText(setHasil.getString("daerahKeluar"));
+             arsipView.getTxtTglTerbitAK().setText(setHasil.getString("tglBlnKeluar"));
+             arsipView.getTxtThnTerbitAK().setText(setHasil.getString("tahunKeluar"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+        }
+      
+       public String tampilNoAktaCerai(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             ResultSet setHasil = pernyataan.executeQuery(aktaCerai);
+             while(setHasil.next()){
+                 arsipView.getCboNoAC().addItem(setHasil.getString("noAC"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+     } 
+      
+       public String tampilItemAC(arsipAkta_View arsipView){
+         try{
+             pernyataan = koneksi.createStatement();
+             String noAC = noAktaCerai +
+                     arsipView.getCboNoAC().getSelectedItem()+"'";
+             ResultSet setHasil = pernyataan.executeQuery(noAC);
+             while(setHasil.next()){
+             arsipView.getTxtNIKAC().setText(setHasil.getString("nik"));
+             arsipView.getTxtTempAC().setText(setHasil.getString("drhPenerbitanAC"));
+             arsipView.getTxtTglTerbitAC().setText(setHasil.getString("tglBlnPenerbitanAC"));
+             arsipView.getTxtThnTerbitAC().setText(setHasil.getString("thnPenerbitanAC"));
+             }
+         } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return null;
+        }
+       
+       public void bacaNoAL(cetakArsipAkta cetakArsip){
+         try {
+             PreparedStatement pernyataanSiap = koneksi.prepareStatement(cetak);
+             ResultSet setHasil = pernyataanSiap.executeQuery();
+             while(setHasil.next()){
+                 cetakArsip.getTxtKode().setText(setHasil.getString("kode"));
+             }
+         } catch (SQLException ex) {
+             Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+     
+     public void cetakAL(cetakArsipAkta cetakArsip){
+         try {
+             File file = new File("src/report/arsipAL.jrxml");
+             jasperDesign = JRXmlLoader.load(file);
+             map.put("kode", cetakArsip.getTxtKode().getText());
+             jasperReport = JasperCompileManager.compileReport(jasperDesign);
+             jasperPrint = JasperFillManager.fillReport(jasperReport, map, koneksi);
+             JasperViewer.viewReport(jasperPrint, false);
+         } catch (Exception ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+     
+     public void cetakAM(cetakArsipAkta cetakArsip){
+         try {
+             File file = new File("src/report/arsipAM.jrxml");
+             jasperDesign = JRXmlLoader.load(file);
+             map.put("kode", cetakArsip.getTxtKode().getText());
+             jasperReport = JasperCompileManager.compileReport(jasperDesign);
+             jasperPrint = JasperFillManager.fillReport(jasperReport, map, koneksi);
+             JasperViewer.viewReport(jasperPrint, false);
+         } catch (Exception ex) {
+             Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+     
+     public void cetakAK(cetakArsipAkta cetakArsip){
+         try {
+             File file = new File("src/report/arsipAK.jrxml");
+             jasperDesign = JRXmlLoader.load(file);
+             map.put("kode", cetakArsip.getTxtKode().getText());
+             jasperReport = JasperCompileManager.compileReport(jasperDesign);
+             jasperPrint = JasperFillManager.fillReport(jasperReport, map, koneksi);
+             JasperViewer.viewReport(jasperPrint, false);
+         } catch (Exception ex) {
+             Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+     
+     public void cetakAC(cetakArsipAkta cetakArsip){
+         try {
+             File file = new File("src/report/arsipAC.jrxml");
+             jasperDesign = JRXmlLoader.load(file);
+             map.put("kode", cetakArsip.getTxtKode().getText());
+             jasperReport = JasperCompileManager.compileReport(jasperDesign);
+             jasperPrint = JasperFillManager.fillReport(jasperReport, map, koneksi);
+             JasperViewer.viewReport(jasperPrint, false);
+         } catch (Exception ex) {
+             Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+         }
+     }
+}
