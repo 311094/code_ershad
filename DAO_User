@@ -1,0 +1,158 @@
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.user_model;
+
+public class DAO_User {
+    final protected String simpan = "insert into user (nip, nama, jabatan, username, password, hakAkses)"
+                        + " values (?,?,?,?,?,?);";
+    final protected String perbaharui = "update user set nama=?, jabatan=?, username=?, password=?, hakAkses=?"
+                            + "where nip=? ;";
+    final protected String hapus = "delete from user where nip=? ;";
+    final protected String pilih = "select * from user ;";
+    final protected String cari = "select * from user where nip like ?" ;
+    
+    private static Connection koneksi;
+    private Statement pernyataan;
+    
+    public DAO_User(){
+        koneksi=koneksiMySQL.getKoneksi();
+    }
+    
+    public void simpan(user_model userModel){
+        PreparedStatement pernyataanSiap = null;
+        
+        try {
+            pernyataanSiap = koneksi.prepareStatement(simpan);
+            pernyataanSiap.setString(1, userModel.getNIP());
+            pernyataanSiap.setString(2, userModel.getNama());
+            pernyataanSiap.setString(3, userModel.getJabatan());
+            pernyataanSiap.setString(4, userModel.getUsername());
+            pernyataanSiap.setString(5, userModel.getPassword());
+            pernyataanSiap.setString(6, userModel.getHakAkses());
+            pernyataanSiap.executeUpdate();
+            ResultSet setHasil = pernyataanSiap.getResultSet();
+            JOptionPane.showMessageDialog(null, "Data Kelahiran Berhasil Tersimpan");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data gagal tersimpan");
+        }
+        finally
+        {
+            try
+        {
+            pernyataanSiap.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        }
+    }
+    
+    public void ubah(user_model userModel){
+        PreparedStatement pernyataanSiap = null;
+        
+        try {
+            pernyataanSiap = koneksi.prepareStatement(perbaharui);
+            pernyataanSiap.setString(1, userModel.getNIP());
+            pernyataanSiap.setString(2, userModel.getNama());
+            pernyataanSiap.setString(3, userModel.getJabatan());
+            pernyataanSiap.setString(4, userModel.getUsername());
+            pernyataanSiap.setString(5, userModel.getPassword());
+            pernyataanSiap.setString(6, userModel.getHakAkses());
+            pernyataanSiap.executeUpdate();
+            ResultSet setHasil = pernyataanSiap.getResultSet();
+            JOptionPane.showMessageDialog(null, "Data Kelahiran Berhasil di Perbaharui");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data gagal di perbaharui");
+        }
+        finally
+        {
+            try
+        {
+            pernyataanSiap.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        }
+    }
+    
+    public void hapus(String nip){
+        PreparedStatement pernyataanSiap = null;
+        try{
+            pernyataanSiap = koneksi.prepareStatement(hapus);
+            pernyataanSiap.setString(1, nip);
+            pernyataanSiap.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Data gagal dihapus");
+        }finally{
+            try{
+                pernyataanSiap.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+    
+    public List<user_model> getDaftar(){
+        List<user_model> daftarStaffModel = null;
+        try {
+            daftarStaffModel = new ArrayList<>();
+            pernyataan = koneksi.createStatement();
+            ResultSet setHasil = pernyataan.executeQuery(pilih);
+            while(setHasil.next()){
+                user_model userModel = new user_model();
+                userModel.setNIP(setHasil.getString("nip"));
+                userModel.setNama(setHasil.getString("nama"));
+                userModel.setJabatan(setHasil.getString("jabatan"));
+                userModel.setUsername(setHasil.getString("username"));
+                userModel.setPassword(setHasil.getString("password"));
+                userModel.setHakAkses(setHasil.getString("hakAkses"));
+                daftarStaffModel.add(userModel);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(user_model.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarStaffModel;
+    }
+    
+    public List<user_model> getCariData(String nip){
+        List<user_model> daftarUserModel = null;
+        
+        try {
+            daftarUserModel = new ArrayList<>();
+            PreparedStatement pernyataanSiap = koneksi.prepareStatement(cari);
+            pernyataanSiap.setString(1, "%" + nip + "%");
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                user_model userModel = new user_model();
+                userModel.setNIP(setHasil.getString("nip"));
+                userModel.setNama(setHasil.getString("nama"));
+                userModel.setJabatan(setHasil.getString("jabatan"));
+                userModel.setUsername(setHasil.getString("username"));
+                userModel.setPassword(setHasil.getString("password"));
+                userModel.setHakAkses(setHasil.getString("hakAkses"));
+                daftarUserModel.add(userModel);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO_AktaKelahiran.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarUserModel;
+    }
+}
