@@ -1,0 +1,23 @@
+package DAO;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+public class koneksiMySQL {
+  
+    private static Connection koneksi;
+    
+    public static Connection getKoneksi(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            koneksi = DriverManager.getConnection("jdbc:mysql://localhost/arsipaktacapil", "root", "");
+            System.out.println("berhasil terkoneksi mysql");
+        } catch (Exception ex) {
+            System.out.println("gagal Koneksi" + ex);
+        }
+        return koneksi;
+    }
+}
