@@ -1,0 +1,116 @@
+package DAO;
+
+//import java.security.InvalidKeyException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.user_model;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.KeyGenerator;
+import java.security.SecureRandom;
+import javax.crypto.Cipher;
+import java.util.Base64;
+//import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+//import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+//import javax.crypto.NoSuchPaddingException;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+public class DAO_login {
+   
+    final protected String validasi = "select * form user username = ? and password = MD5 ? ;";
+    final protected String cariNIP = "select * from user where nip like ?";
+    final protected String cariLogin = "select * from user where username like ? and password like ? ";
+    
+    private static Connection koneksi;
+    
+    protected static byte[] chiperText, plainText, ivBytes ;
+    
+    /*private static final String CIPHER_SPEC = "AES/CBC/PKCS5Padding", KEYGEN_SPEC = "PBKDF2WithHmacSHA1";
+    private static final int SALT_LENGHT = 16, AUTH = 8, ITERATIONS = 32768, BUFFER_SIZE = 1024;*/
+    
+    public DAO_login(){
+        koneksi = koneksiMySQL.getKoneksi();
+    }
+    
+    public static String setEnkripsi(SecretKeySpec key, String plainText) throws Exception{
+        
+        byte[] pass = plainText.getBytes(StandardCharsets.UTF_8);
+        Cipher chiper = Cipher.getInstance("AES");
+        chiper.init(Cipher.DECRYPT_MODE, key);
+        chiperText = chiper.doFinal(pass);
+        //String sandi;
+        //sandi = new BASE64Encoder().encode(chiperText);
+        //return sandi;
+
+        final byte[] keyData = Base64.getDecoder().decode(chiperText);
+        final int keySize = keyData.length * Byte.SIZE;
+        
+        switch(keySize){
+            case 128:
+            case 192:
+            case 256:
+                break;
+                default:
+                    throw new IllegalBlockSizeException("gagal" + keySize);
+        }
+        MessageDigest md = MessageDigest.getInstance(String.valueOf(keySize).toLowerCase());
+        //md.update(pass);
+        byte[] bytePass = md.digest();
+        byte[] keyBytes = Arrays.copyOf(bytePass, 24);
+        //SecretKey key = new SecretKeySpec(keyByte, String.valueOf(keySize));
+        String base64 = new BASE64Encoder().encode(keyBytes);
+        return new String(base64.getBytes(), StandardCharsets.UTF_8);//md.getAlgorithm();
+    }
+    
+    public static SecretKeySpec genKey(String key) throws Exception{
+        
+        byte[]input = key.getBytes();
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        KeyGenerator kg = KeyGenerator.getInstance("AES");
+        byte[] b = new byte[256];
+        sr.setSeed(input);
+        kg.init(b.length, sr);
+        SecretKey kunci = kg.generateKey();
+        byte[] bytes = kunci.getEncoded();
+        SecretKeySpec spec = new SecretKeySpec(bytes, "AES");
+        return spec;
+    }
+    
+    public List<user_model> validasi(String user, String pass)throws Exception{
+        List<user_model> daftarUserModel = null;
+        SecretKeySpec key = genKey(pass);
+        try {
+            daftarUserModel = new ArrayList<>();
+            PreparedStatement pernyataanSiap = koneksi.prepareStatement(validasi);
+            pernyataanSiap.setString(1, "%"+user+"%");
+            pernyataanSiap.setString(2, setEnkripsi(key, "%"+pass+"%"));
+            ResultSet setHasil = pernyataanSiap.executeQuery();
+            while(setHasil.next()){
+                user_model userModel = new user_model();
+                userModel.setNIP(setHasil.getString("nip"));
+                userModel.setNama(setHasil.getString("nama"));
+                userModel.setUsername(setHasil.getString("username"));
+                userModel.setPassword(setHasil.getString("password"));
+                userModel.setHakAkses(setHasil.getString("hakAkses"));
+                daftarUserModel.add(userModel);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO_login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return daftarUserModel;
+    }
+}
