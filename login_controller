@@ -1,0 +1,185 @@
+package controller;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import DAO.DAO_login;
+import model.user_model;
+import view.login_view;
+import view.MenuUtama_view;
+import java.util.List;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import java.awt.Toolkit;
+
+public class login_controller {
+    private static DAO_login daoLogIn;
+    final private user_model userModel = new user_model();
+    final private login_view logInView;
+    final private MenuUtama_view menu = new MenuUtama_view();
+    
+   
+    public login_controller (login_view loginView){
+        daoLogIn = new DAO_login();
+        this.logInView=loginView;
+    }
+    
+     public DAO_login getDaoLogin(){
+        return daoLogIn;
+    }
+    
+    public void login(login_view loginView){
+      
+        try {
+            List<user_model> listLogin ;
+            listLogin = getDaoLogin().validasi(loginView.getTxtUsername().getText(), (loginView.getTxtPassword().getText()));
+            if(listLogin.size()>=1){
+                if(listLogin.get(0).getHakAkses().equalsIgnoreCase("Kabid")){
+                    for(int i = 0; i<listLogin.size(); i++){
+                    menu.getProgress().setVisible(true);
+                    menu.getProgress().setValue(i);
+                    menu.setLblUser(loginView.getTxtUsername().getText());
+                    hakAksesKabid();
+                    menu.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+                    menu.setLocationRelativeTo(null);
+                    menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    menu.setVisible(true);
+                    loginView.dispose();
+                    }
+                }else if(listLogin.get(0).getHakAkses().equalsIgnoreCase("Staff Bidang Kelahiran dan Kematian")){
+                    menu.setLblUser(loginView.getTxtUsername().getText());
+                    hakAksesStaffKelahiranKematian();
+                    menu.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+                    menu.setLocationRelativeTo(null);
+                    menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    menu.setVisible(true);
+                    loginView.dispose();
+                }else if(listLogin.get(0).getHakAkses().equalsIgnoreCase("Staff Bidang Perkawinan dan Perceraian")){
+                    menu.setLblUser(loginView.getTxtUsername().getText());
+                    hakAksesStaffPerkawinanPerceraian();
+                    menu.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+                    menu.setLocationRelativeTo(null);
+                    menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    menu.setVisible(true);
+                    loginView.dispose();
+                }else if(listLogin.get(0).getHakAkses().equalsIgnoreCase("Petugas Pencatatan Sipil")){
+                    menu.setLblUser(loginView.getTxtUsername().getText());
+                    hakAksesPetugasCapil();
+                    menu.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+                    menu.setLocationRelativeTo(null);
+                    menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    menu.setVisible(true);
+                    loginView.dispose();
+                }
+                }else{
+               JOptionPane.showMessageDialog(null, "Username atau Password tidak ditemukan \nHarap ulangi","PERHATIAN",
+               JOptionPane.WARNING_MESSAGE);
+            }
+        } catch(Exception ex) {
+                JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+    public void validasi(){
+        String username = String.valueOf(logInView.getTxtUsername().getText());
+        userModel.setUsername(username);
+        String password = String.valueOf(logInView.getTxtPassword().getText());
+        userModel.setPassword(password);
+        
+        if(username.isEmpty()||(password.isEmpty())){
+            JOptionPane.showMessageDialog(logInView, "silahkan lengkapi username dan password");
+        }else{
+            login(logInView);
+        }
+    }
+    
+    public void kosong(){
+        logInView.getTxtUsername().setText("");
+        logInView.getTxtPassword().setText("");
+    }
+    
+    public void setEditOff(){
+        logInView.getTxtUsername().setEnabled(false);
+        logInView.getTxtPassword().setEnabled(false);
+    }
+    
+    public void setEditOn(){
+        logInView.getTxtUsername().setEnabled(true);
+        logInView.getTxtPassword().setEnabled(true);
+    }
+    
+    public void hakAksesKabid(){
+    menu.getMnuAktaLahir().setEnabled(true);
+    menu.getMnuAktaMati().setEnabled(true);
+    menu.getMnuAktaKawin().setEnabled(true);
+    menu.getMnuAktaCerai().setEnabled(true);
+    menu.getMnuArsip().setEnabled(true);
+    menu.getMnuUser().setEnabled(true);
+    menu.getLogOut().setEnabled(true);
+    menu.getCetakAktaLahir().setEnabled(true);
+    menu.getCetakAktaMati().setEnabled(true);
+    menu.getCetakAktaKawin().setEnabled(true);
+    menu.getCetakAktaCerai().setEnabled(true);
+    menu.getCetakArsipAkta().setEnabled(true);
+    }
+    
+    public void hakAksesStaffKelahiranKematian(){
+        menu.getMnuAktaLahir().setEnabled(true);
+        menu.getMnuAktaCerai().setEnabled(true);
+        menu.getMnuAktaKawin().setEnabled(false);
+        menu.getMnuAktaCerai().setEnabled(false);
+        menu.getMnuArsip().setEnabled(false);
+        menu.getMnuUser().setEnabled(false);
+        menu.getLogOut().setEnabled(true);
+        menu.getCetakAktaLahir().setEnabled(true);
+        menu.getCetakAktaMati().setEnabled(true);
+        menu.getCetakAktaKawin().setEnabled(false);
+        menu.getCetakAktaCerai().setEnabled(false);
+        menu.getCetakArsipAkta().setEnabled(false);
+    }
+    
+    public void hakAksesStaffPerkawinanPerceraian(){
+        menu.getMnuAktaLahir().setEnabled(false);
+        menu.getMnuAktaMati().setEnabled(false);
+        menu.getMnuAktaKawin().setEnabled(true);
+        menu.getMnuAktaCerai().setEnabled(true);
+        menu.getMnuArsip().setEnabled(false);
+        menu.getMnuUser().setEnabled(false);
+        menu.getLogOut().setEnabled(true);
+        menu.getCetakAktaLahir().setEnabled(false);
+        menu.getCetakAktaMati().setEnabled(false);
+        menu.getCetakAktaKawin().setEnabled(true);
+        menu.getCetakAktaCerai().setEnabled(true);
+        menu.getCetakArsipAkta().setEnabled(false);
+    }
+    
+    public void hakAksesPetugasCapil(){
+        menu.getMnuAktaLahir().setEnabled(false);
+        menu.getMnuAktaMati().setEnabled(false);
+        menu.getMnuAktaKawin().setEnabled(false);
+        menu.getMnuAktaCerai().setEnabled(false);
+        menu.getMnuArsip().setEnabled(true);
+        menu.getMnuUser().setEnabled(false);
+        menu.getLogOut().setEnabled(true);
+        menu.getCetakAktaLahir().setEnabled(false);
+        menu.getCetakAktaMati().setEnabled(false);
+        menu.getCetakAktaKawin().setEnabled(false);
+        menu.getCetakAktaCerai().setEnabled(false);
+        menu.getCetakArsipAkta().setEnabled(true);
+    }
+    
+    private void tampilMenu(){
+        MenuUtama_view muv = new MenuUtama_view();
+        muv.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        muv.setLocationRelativeTo(muv);
+        muv.setVisible(true);
+    }
+    
+    public void tampilLogin(){
+        //login_view loginView = new login_view();
+        logInView.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        logInView.setLocationRelativeTo(menu);
+    }
+}
