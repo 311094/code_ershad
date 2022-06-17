@@ -1,0 +1,531 @@
+package controller;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import java.awt.Toolkit;
+import DAO.DAO_AktaPerkawinan;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import model.aktaPerkawinan_model;
+import model.aktaPerkawinan_table_model;
+import model.aktaPerkawinan_paginasi_model;
+import view.aktaPerkawinan_view;
+import view.aktaPerkawinan_table_view;
+import view.cetakAktaPerkawinan;
+
+public class aktaPerkawinan_controller {
+    private static DAO_AktaPerkawinan DAOAktaPerkawinan;
+    final private aktaPerkawinan_model aktaPerkawinanModel = new aktaPerkawinan_model();
+    private List<aktaPerkawinan_model> daftarAktaPerkawinan;
+    final private aktaPerkawinan_paginasi_model aktaPerkawinanPaginasi = new aktaPerkawinan_paginasi_model();
+    private aktaPerkawinan_view aktaPerkawinanView;
+    private aktaPerkawinan_table_view aktaPerkawinanTableView;
+    private cetakAktaPerkawinan cak;
+    
+    public aktaPerkawinan_controller(aktaPerkawinan_view aktaPerkawinanView){
+        DAOAktaPerkawinan = new DAO_AktaPerkawinan();
+        this.aktaPerkawinanView=aktaPerkawinanView;
+    }
+    
+    public aktaPerkawinan_controller(aktaPerkawinan_table_view aktPerkawinanTabelView){
+        DAOAktaPerkawinan = new DAO_AktaPerkawinan();
+        this.aktaPerkawinanTableView=aktPerkawinanTabelView;
+    }
+    
+    public aktaPerkawinan_controller(cetakAktaPerkawinan cak){
+        DAOAktaPerkawinan = new DAO_AktaPerkawinan();
+        this.cak=cak;
+    }
+    
+    public DAO_AktaPerkawinan getDAOAktaPerkawinan(){
+        return DAOAktaPerkawinan;
+    }
+    
+    public void simpan(){
+        String noAK = String.valueOf(aktaPerkawinanView.getTxtNoAK().getText());
+        aktaPerkawinanModel.setNoAK(noAK);
+        String nik = String.valueOf(aktaPerkawinanView.getTxtNIK().getText());
+        aktaPerkawinanModel.setNIK(nik);
+        String wargaNegara = String.valueOf(aktaPerkawinanView.getTxtWargaNegara().getText());
+        aktaPerkawinanModel.setWargaNegara(wargaNegara);
+        String noPP = String.valueOf(aktaPerkawinanView.getTxtNoPP().getText());
+        aktaPerkawinanModel.setNoPP(noPP);
+        String aturanStbld = String.valueOf(aktaPerkawinanView.getTxtAturanStbld().getText());
+        aktaPerkawinanModel.setAturanStbld(aturanStbld);
+        String daerah = String.valueOf(aktaPerkawinanView.getTxtDaerahPembuatanAK().getText());
+        aktaPerkawinanModel.setDaerahPembuatanAK(daerah);
+        String tanggalPembuatan = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().getText());
+        aktaPerkawinanModel.setTanggalPembuatanAK(tanggalPembuatan);
+        String tahunPembuatan = String.valueOf(aktaPerkawinanView.getTxtTahunPembuatanAK().getText());
+        aktaPerkawinanModel.setTahunPembuatanAK(tahunPembuatan);
+        String namaSuami = String.valueOf(aktaPerkawinanView.getTxtNamaSuami().getText());
+        aktaPerkawinanModel.setNamaSuami(namaSuami);
+        String namaIstri = String.valueOf(aktaPerkawinanView.getTxtNamaIstri().getText());
+        aktaPerkawinanModel.setNamaIstri(namaIstri);
+        String agama = String.valueOf(aktaPerkawinanView.getCboAgama().getSelectedItem().toString());
+        aktaPerkawinanModel.setAgama(agama);
+        String namaTokoh = String.valueOf(aktaPerkawinanView.getTxtNamaTokohTempatAlamat().getText());
+        aktaPerkawinanModel.setNamaTokohTempatDaerah(namaTokoh);
+        String tanggalBulanNikah = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanNikah().getText());
+        aktaPerkawinanModel.setTanggalBulanNikah(tanggalBulanNikah);
+        String tahunNikah = String.valueOf(aktaPerkawinanView.getTxtTahunNikah().getText());
+        aktaPerkawinanModel.setTahunNikah(tahunNikah);
+        String alamatPembuatan = String.valueOf(aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().getText());
+        aktaPerkawinanModel.setTempatPerjanjianPerkawinan(alamatPembuatan);
+        String saksi = String.valueOf(aktaPerkawinanView.getTxtSaksiHukum().getText());
+        aktaPerkawinanModel.setSaksi(saksi);
+        String no = String.valueOf(aktaPerkawinanView.getTxtNo().getText());
+        aktaPerkawinanModel.setNo(no);
+        String tanggalPengesahan = String.valueOf(aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().getText());
+        aktaPerkawinanModel.setTanggalPerjanjianPerkawinan(tanggalPengesahan);
+        String bulanPengesahan = String.valueOf(aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().getSelectedItem().toString());
+        aktaPerkawinanModel.setBulanPerjanjianPerkawinan(bulanPengesahan);
+        String tahunPengesahan = String.valueOf(aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().getText());
+        aktaPerkawinanModel.setTahunPerjanjianPerkawinan(tahunPengesahan);
+        String daerahPengesahan = String.valueOf(aktaPerkawinanView.getTxtDaerahPengesahan().getText());
+        aktaPerkawinanModel.setDaerahPengesahan(daerahPengesahan);
+        String noPPP = String.valueOf(aktaPerkawinanView.getTxtNoPPP().getText());
+        aktaPerkawinanModel.setNoPPP(noPPP);
+        String daerahKeluarAP = String.valueOf(aktaPerkawinanView.getTxtDaerahKeluarAP().getText());
+        aktaPerkawinanModel.setDaerahPengeluaranAK(daerahKeluarAP);
+        String tanggalKeluarAP = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanKeluarAP().getText());
+        aktaPerkawinanModel.setTanggalPengeluaranAK(tanggalKeluarAP);
+        String tahunKeluarAP = String.valueOf(aktaPerkawinanView.getTxtTahunKeluarAP().getText());
+        aktaPerkawinanModel.setTahunPengeluaranAK(tahunKeluarAP);
+        String jabatan = String.valueOf(aktaPerkawinanView.getTxaJabatan().getText());
+        aktaPerkawinanModel.setJabatan(jabatan);
+        String namaPejabat = String.valueOf(aktaPerkawinanView.getTxtNamaJabatan().getText());
+        aktaPerkawinanModel.setNamaPejabat(namaPejabat);
+        String nip = String.valueOf(aktaPerkawinanView.getTxtNIP().getText());
+        aktaPerkawinanModel.setNIP(nip);
+        
+        if((noAK.isEmpty())|(nik.isEmpty())|(wargaNegara.isEmpty())|(noPP.isEmpty())|(aturanStbld.isEmpty())|
+          (daerah.isEmpty())|(tanggalPembuatan.isEmpty())|(tahunPembuatan.isEmpty())|(namaSuami.isEmpty())|
+          (namaIstri.isEmpty())|(agama.isEmpty())|(namaTokoh.isEmpty())|(tanggalBulanNikah.isEmpty())|
+          (tahunNikah.isEmpty())|(alamatPembuatan.isEmpty())|(saksi.isEmpty())|(no.isEmpty())|(tanggalPengesahan.isEmpty())|
+          (bulanPengesahan.isEmpty())|(tahunPengesahan.isEmpty())|(daerahPengesahan.isEmpty())|(noPPP.isEmpty())|
+          (jabatan.isEmpty())|(namaPejabat.isEmpty())|(nip.isEmpty())|(daerahKeluarAP.isEmpty())|(tanggalKeluarAP.isEmpty())|
+          (tahunKeluarAP.isEmpty())){
+            JOptionPane.showMessageDialog(aktaPerkawinanView, "silahkan Lengkapi data akta perkawinan");
+        }else{
+           DAOAktaPerkawinan.simpan(aktaPerkawinanModel);
+           kosong();
+           aktaPerkawinanView.getBtnSimpan().setEnabled(false);
+           aktaPerkawinanView.getBtnPerbaharui().setEnabled(true);
+           aktaPerkawinanView.getBtnHapus().setEnabled(true);
+        }
+    }
+    
+    public void ubah(){
+        String noAK = String.valueOf(aktaPerkawinanView.getTxtNoAK().getText());
+        aktaPerkawinanModel.setNoAK(noAK);
+        String nik = String.valueOf(aktaPerkawinanView.getTxtNIK().getText());
+        aktaPerkawinanModel.setNIK(nik);
+        String wargaNegara = String.valueOf(aktaPerkawinanView.getTxtWargaNegara().getText());
+        aktaPerkawinanModel.setWargaNegara(wargaNegara);
+        String noPP = String.valueOf(aktaPerkawinanView.getTxtNoPP().getText());
+        aktaPerkawinanModel.setNoPP(noPP);
+        String aturanStbld = String.valueOf(aktaPerkawinanView.getTxtAturanStbld().getText());
+        aktaPerkawinanModel.setAturanStbld(aturanStbld);
+        String daerah = String.valueOf(aktaPerkawinanView.getTxtDaerahPembuatanAK().getText());
+        aktaPerkawinanModel.setDaerahPembuatanAK(daerah);
+        String tanggalPembuatan = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().getText());
+        aktaPerkawinanModel.setTanggalPembuatanAK(tanggalPembuatan);
+        String tahunPembuatan = String.valueOf(aktaPerkawinanView.getTxtTahunPembuatanAK().getText());
+        aktaPerkawinanModel.setTahunPembuatanAK(tahunPembuatan);
+        String namaSuami = String.valueOf(aktaPerkawinanView.getTxtNamaSuami().getText());
+        aktaPerkawinanModel.setNamaSuami(namaSuami);
+        String namaIstri = String.valueOf(aktaPerkawinanView.getTxtNamaIstri().getText());
+        aktaPerkawinanModel.setNamaIstri(namaIstri);
+        String agama = String.valueOf(aktaPerkawinanView.getCboAgama().getSelectedItem().toString());
+        aktaPerkawinanModel.setAgama(agama);
+        String namaTokoh = String.valueOf(aktaPerkawinanView.getTxtNamaTokohTempatAlamat().getText());
+        aktaPerkawinanModel.setNamaTokohTempatDaerah(namaTokoh);
+        String tanggalBulanNikah = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanNikah().getText());
+        aktaPerkawinanModel.setTanggalBulanNikah(tanggalBulanNikah);
+        String tahunNikah = String.valueOf(aktaPerkawinanView.getTxtTahunNikah().getText());
+        aktaPerkawinanModel.setTahunNikah(tahunNikah);
+        String alamatPembuatan = String.valueOf(aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().getText());
+        aktaPerkawinanModel.setDaerahPembuatanAK(alamatPembuatan);
+        String saksi = String.valueOf(aktaPerkawinanView.getTxtSaksiHukum().getText());
+        aktaPerkawinanModel.setSaksi(saksi);
+        String no = String.valueOf(aktaPerkawinanView.getTxtNo().getText());
+        aktaPerkawinanModel.setNo(no);
+        String tanggalPengesahan = String.valueOf(aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().getText());
+        aktaPerkawinanModel.setTanggalPerjanjianPerkawinan(tanggalPengesahan);
+        String bulanPengesahan = String.valueOf(aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().getSelectedItem().toString());
+        aktaPerkawinanModel.setBulanPerjanjianPerkawinan(bulanPengesahan);
+        String tahunPengesahan = String.valueOf(aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().getText());
+        aktaPerkawinanModel.setTahunPerjanjianPerkawinan(tahunPengesahan);
+        String daerahPengesahan = String.valueOf(aktaPerkawinanView.getTxtDaerahPengesahan().getText());
+        aktaPerkawinanModel.setDaerahPengesahan(daerahPengesahan);
+        String noPPP = String.valueOf(aktaPerkawinanView.getTxtNoPPP().getText());
+        aktaPerkawinanModel.setNoPPP(noPPP);
+        String daerahKeluarAP = String.valueOf(aktaPerkawinanView.getTxtDaerahKeluarAP().getText());
+        aktaPerkawinanModel.setDaerahPengeluaranAK(daerahKeluarAP);
+        String tanggalKeluarAP = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanKeluarAP().getText());
+        aktaPerkawinanModel.setTanggalPengeluaranAK(tanggalKeluarAP);
+        String tahunKeluarAP = String.valueOf(aktaPerkawinanView.getTxtTahunKeluarAP().getText());
+        aktaPerkawinanModel.setTahunPengeluaranAK(tahunKeluarAP);
+        String jabatan = String.valueOf(aktaPerkawinanView.getTxaJabatan().getText());
+        aktaPerkawinanModel.setJabatan(jabatan);
+        String namaPejabat = String.valueOf(aktaPerkawinanView.getTxtNamaJabatan().getText());
+        aktaPerkawinanModel.setNamaPejabat(namaPejabat);
+        String nip = String.valueOf(aktaPerkawinanView.getTxtNIP().getText());
+        aktaPerkawinanModel.setNIP(nip);
+        
+        if((noAK.isEmpty())|(nik.isEmpty())|(wargaNegara.isEmpty())|(noPP.isEmpty())|(aturanStbld.isEmpty())|
+          (daerah.isEmpty())|(tanggalPembuatan.isEmpty())|(tahunPembuatan.isEmpty())|(namaSuami.isEmpty())|
+          (namaIstri.isEmpty())|(agama.isEmpty())|(namaTokoh.isEmpty())|(tanggalBulanNikah.isEmpty())|
+          (tahunNikah.isEmpty())|(alamatPembuatan.isEmpty())|(saksi.isEmpty())|(no.isEmpty())|(tanggalPengesahan.isEmpty())|
+          (bulanPengesahan.isEmpty())|(tahunPengesahan.isEmpty())|(daerahPengesahan.isEmpty())|(noPPP.isEmpty())|
+          (jabatan.isEmpty())|(namaPejabat.isEmpty())|(nip.isEmpty())|(daerahKeluarAP.isEmpty())|(tanggalKeluarAP.isEmpty())|
+          (tahunKeluarAP.isEmpty())){
+            JOptionPane.showMessageDialog(aktaPerkawinanView, "silahkan Lengkapi data akta perkawinan");
+        }else{
+           int hasil = JOptionPane.showConfirmDialog(aktaPerkawinanView, "Apakah anda yakin memperbaharui atau"
+           +" mengubah data tersebut"+"\n"+aktaPerkawinanView.getTxtNoAK().getText() ,"PERHATIAN", JOptionPane.YES_NO_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+           DAOAktaPerkawinan.ubah(aktaPerkawinanModel);
+           kosong();
+           aktaPerkawinanView.getBtnSimpan().setEnabled(false);
+           aktaPerkawinanView.getBtnPerbaharui().setEnabled(false);
+           aktaPerkawinanView.getBtnHapus().setEnabled(true);
+        }else if(hasil==JOptionPane.NO_OPTION){
+        }
+    }
+}
+    
+    public void hapus(){
+        String noAK = String.valueOf(aktaPerkawinanView.getTxtNoAK().getText());
+        aktaPerkawinanModel.setNoAK(noAK);
+        
+        if(noAK.isEmpty()){
+            JOptionPane.showMessageDialog(aktaPerkawinanView, "Silahkan masukan data no AK");
+        }else{
+           int hasil = JOptionPane.showConfirmDialog(aktaPerkawinanView, "Apakah anda yakin menghapus data tersebut"
+           +" "+aktaPerkawinanView.getTxtNoAK().getText(), "PERHATIAN", JOptionPane.YES_NO_CANCEL_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+                DAOAktaPerkawinan.hapus(noAK);
+                setEditOff();
+                kosong();
+           }else if(hasil==JOptionPane.NO_OPTION){
+           }
+       }
+    }
+    
+    public void daerahKutipan(){
+        String daerah = String.valueOf(aktaPerkawinanView.getTxtDaerahPembuatanAK().getText());
+        aktaPerkawinanView.getTxtDaerahKeluarAP().setText(daerah);
+    }
+    
+    public void tanggalKutipan(){
+        String tanggal = String.valueOf(aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().getText());
+        aktaPerkawinanView.getTxtTanggalBulanKeluarAP().setText(tanggal);
+    }
+    
+    public void tahunKutipan(){
+        String tahun = String.valueOf(aktaPerkawinanView.getTxtTahunPembuatanAK().getText());
+        aktaPerkawinanView.getTxtTahunKeluarAP().setText(tahun);
+    }
+    
+    public void kosong(){
+        aktaPerkawinanView.getTxtNoAK().setText("");
+        aktaPerkawinanView.getTxtNIK().setText("");
+        aktaPerkawinanView.getTxtWargaNegara().setText("");
+        aktaPerkawinanView.getTxtNoPP().setText("");
+        aktaPerkawinanView.getTxtAturanStbld().setText("");
+        aktaPerkawinanView.getTxtDaerahPembuatanAK().setText("");
+        aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().setText("");
+        aktaPerkawinanView.getTxtTahunPembuatanAK().setText("");
+        aktaPerkawinanView.getTxtNamaSuami().setText("");
+        aktaPerkawinanView.getTxtNamaIstri().setText("");
+        aktaPerkawinanView.getCboAgama().setSelectedIndex(0);
+        aktaPerkawinanView.getTxtNamaTokohTempatAlamat().setText("");
+        aktaPerkawinanView.getTxtTanggalBulanNikah().setText("");
+        aktaPerkawinanView.getTxtTahunNikah().setText("");
+        aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().setText("");
+        aktaPerkawinanView.getTxtSaksiHukum().setText("");
+        aktaPerkawinanView.getTxtNo().setText("");
+        aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().setText("");
+        aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().setSelectedIndex(0);
+        aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().setText("");
+        aktaPerkawinanView.getTxtDaerahPengesahan().setText("");
+        aktaPerkawinanView.getTxtNoPPP().setText("");
+        aktaPerkawinanView.getTxtDaerahKeluarAP().setText("");
+        aktaPerkawinanView.getTxtTanggalBulanKeluarAP().setText("");
+        aktaPerkawinanView.getTxtTahunKeluarAP().setText("");
+        aktaPerkawinanView.getTxaJabatan().setText("");
+        aktaPerkawinanView.getTxtNamaJabatan().setText("");
+        aktaPerkawinanView.getTxtNIP().setText("");
+    }
+    
+    public void setEditOff(){
+        aktaPerkawinanView.getTxtNoAK().setEnabled(false);
+        aktaPerkawinanView.getTxtNIK().setEnabled(false);
+        aktaPerkawinanView.getTxtWargaNegara().setEnabled(false);
+        aktaPerkawinanView.getTxtNoPP().setEnabled(false);
+        aktaPerkawinanView.getTxtAturanStbld().setEnabled(false);
+        aktaPerkawinanView.getTxtDaerahPembuatanAK().setEnabled(false);
+        aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().setEnabled(false);
+        aktaPerkawinanView.getTxtTahunPembuatanAK().setEnabled(false);
+        aktaPerkawinanView.getTxtNamaSuami().setEnabled(false);
+        aktaPerkawinanView.getTxtNamaIstri().setEnabled(false);
+        aktaPerkawinanView.getCboAgama().setEnabled(false);
+        aktaPerkawinanView.getTxtNamaTokohTempatAlamat().setEnabled(false);
+        aktaPerkawinanView.getTxtTanggalBulanNikah().setEnabled(false);
+        aktaPerkawinanView.getTxtTahunNikah().setEnabled(false);
+        aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().setEnabled(false);
+        aktaPerkawinanView.getTxtSaksiHukum().setEnabled(false);
+        aktaPerkawinanView.getTxtNo().setEnabled(false);
+        aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().setEnabled(false);
+        aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().setEnabled(false);
+        aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().setEnabled(false);
+        aktaPerkawinanView.getTxtDaerahPengesahan().setEnabled(false);
+        aktaPerkawinanView.getTxtNoPPP().setEnabled(false);
+        aktaPerkawinanView.getTxtDaerahKeluarAP().setEnabled(false);
+        aktaPerkawinanView.getTxtTanggalBulanKeluarAP().setEnabled(false);
+        aktaPerkawinanView.getTxtTahunKeluarAP().setEnabled(false);
+        aktaPerkawinanView.getTxaJabatan().setEnabled(false);
+        aktaPerkawinanView.getTxtNamaJabatan().setEnabled(false);
+        aktaPerkawinanView.getTxtNIP().setEnabled(false);
+        aktaPerkawinanView.getTxtCari().setEnabled(false);
+        aktaPerkawinanView.getBtnCari().setEnabled(false);
+        aktaPerkawinanView.getBtnSimpan().setEnabled(false);
+        aktaPerkawinanView.getBtnPerbaharui().setEnabled(false);
+        aktaPerkawinanView.getBtnHapus().setEnabled(false);
+    }
+    
+    public void setEditOn(){
+        aktaPerkawinanView.getTxtNoAK().setEnabled(true);
+        aktaPerkawinanView.getTxtNIK().setEnabled(true);
+        aktaPerkawinanView.getTxtWargaNegara().setEnabled(true);
+        aktaPerkawinanView.getTxtNoPP().setEnabled(true);
+        aktaPerkawinanView.getTxtAturanStbld().setEnabled(true);
+        aktaPerkawinanView.getTxtDaerahPembuatanAK().setEnabled(true);
+        aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().setEnabled(true);
+        aktaPerkawinanView.getTxtTahunPembuatanAK().setEnabled(true);
+        aktaPerkawinanView.getTxtNamaSuami().setEnabled(true);
+        aktaPerkawinanView.getTxtNamaIstri().setEnabled(true);
+        aktaPerkawinanView.getCboAgama().setEnabled(true);
+        aktaPerkawinanView.getTxtNamaTokohTempatAlamat().setEnabled(true);
+        aktaPerkawinanView.getTxtTanggalBulanNikah().setEnabled(true);
+        aktaPerkawinanView.getTxtTahunNikah().setEnabled(true);
+        aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().setEnabled(true);
+        aktaPerkawinanView.getTxtSaksiHukum().setEnabled(true);
+        aktaPerkawinanView.getTxtNo().setEnabled(true);
+        aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().setEnabled(true);
+        aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().setEnabled(true);
+        aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().setEnabled(true);
+        aktaPerkawinanView.getTxtDaerahPengesahan().setEnabled(true);
+        aktaPerkawinanView.getTxtNoPPP().setEnabled(true);
+        aktaPerkawinanView.getTxtDaerahKeluarAP().setEnabled(true);
+        aktaPerkawinanView.getTxtTanggalBulanKeluarAP().setEnabled(true);
+        aktaPerkawinanView.getTxtTahunKeluarAP().setEnabled(true);
+        aktaPerkawinanView.getTxaJabatan().setEnabled(true);
+        aktaPerkawinanView.getTxtNamaJabatan().setEnabled(true);
+        aktaPerkawinanView.getTxtNIP().setEnabled(true);
+        aktaPerkawinanView.getTxtCari().setEnabled(true);
+    }
+    
+    
+    public void konten(){
+        
+        daftarAktaPerkawinan = getDAOAktaPerkawinan().getCariData(aktaPerkawinanView.getTxtCari().getText());
+        aktaPerkawinan_table_model modelTableAktaPerkawinan = new aktaPerkawinan_table_model(daftarAktaPerkawinan);
+        
+        aktaPerkawinanView.getTxtNoAK().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 0)));
+        aktaPerkawinanView.getTxtNIK().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 1)));
+        aktaPerkawinanView.getTxtWargaNegara().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 2)));
+        aktaPerkawinanView.getTxtNoPP().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 3)));
+        aktaPerkawinanView.getTxtAturanStbld().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 4)));
+        aktaPerkawinanView.getTxtDaerahPembuatanAK().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 5)));
+        aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 6)));
+        aktaPerkawinanView.getTxtTahunPembuatanAK().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 7)));
+        aktaPerkawinanView.getTxtNamaSuami().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 8)));
+        aktaPerkawinanView.getTxtNamaIstri().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 9)));
+        aktaPerkawinanView.getCboAgama().setSelectedItem(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 10)));
+        aktaPerkawinanView.getTxtNamaTokohTempatAlamat().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 11)));
+        aktaPerkawinanView.getTxtTanggalBulanNikah().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 12)));
+        aktaPerkawinanView.getTxtTahunNikah().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 13)));
+        aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 14)));
+        aktaPerkawinanView.getTxtSaksiHukum().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 15)));
+        aktaPerkawinanView.getTxtNo().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 16)));
+        aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 17)));
+        aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().setSelectedItem(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 18)));
+        aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 19)));
+        aktaPerkawinanView.getTxtDaerahPengesahan().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 20)));
+        aktaPerkawinanView.getTxtNoPPP().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 21)));
+        aktaPerkawinanView.getTxtDaerahKeluarAP().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 22)));
+        aktaPerkawinanView.getTxtTanggalBulanKeluarAP().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 23)));
+        aktaPerkawinanView.getTxtTahunKeluarAP().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 24)));
+        aktaPerkawinanView.getTxaJabatan().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 25)));
+        aktaPerkawinanView.getTxtNamaJabatan().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 26)));
+        aktaPerkawinanView.getTxtNIP().setText(String.valueOf(modelTableAktaPerkawinan.getValueAt(0, 27)));
+    }
+    
+    public void kontenTabel(){
+        daftarAktaPerkawinan = DAOAktaPerkawinan.getCariData(aktaPerkawinanView.getTxtCari().getText());
+        aktaPerkawinan_table_model modelTableAktaPerkawinan = new aktaPerkawinan_table_model(daftarAktaPerkawinan);
+       aktaPerkawinanTableView.getTabelAktaPerkawinan().setModel(modelTableAktaPerkawinan);
+    }
+    
+    public void cariData(){
+        if(!aktaPerkawinanView.getTxtCari().getText().trim().isEmpty()){
+        DAOAktaPerkawinan.getCariData(aktaPerkawinanView.getTxtCari().getText());
+        konten();
+        aktaPerkawinanView.getBtnSimpan().setEnabled(true);
+        aktaPerkawinanView.getBtnPerbaharui().setEnabled(true);
+        aktaPerkawinanView.getBtnHapus().setEnabled(true);
+    }else{
+            JOptionPane.showMessageDialog(aktaPerkawinanView, "Mohon tekan tombol pencarian");
+            }
+    }
+    
+    public void cariDataTabel(){
+        if(!aktaPerkawinanTableView.getTxtCari().getText().trim().isEmpty()){
+            DAOAktaPerkawinan.getCariData(aktaPerkawinanTableView.getTxtCari().getText());
+            kontenTabel();
+        }else{
+            JOptionPane.showMessageDialog(aktaPerkawinanView, "Mohon tekan tombol pencarian");
+        }
+    }
+    
+    public void kontenBarisData(int baris){
+        aktaPerkawinanView.getTxtNoAK().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNoAK()));
+        aktaPerkawinanView.getTxtNIP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNIK()));
+        aktaPerkawinanView.getTxtWargaNegara().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getWargaNegara()));
+        aktaPerkawinanView.getTxtNoPP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNoPP()));
+        aktaPerkawinanView.getTxtAturanStbld().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getAturanStbld()));
+        aktaPerkawinanView.getTxtDaerahPembuatanAK().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getDaerahPembuatanAK()));
+        aktaPerkawinanView.getTxtTanggalBulanPembuatanAK().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTanggalPembuatanAK()));
+        aktaPerkawinanView.getTxtTahunPembuatanAK().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTahunPembuatanAK()));
+        aktaPerkawinanView.getTxtNamaSuami().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNamaSuami()));
+        aktaPerkawinanView.getTxtNamaIstri().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNamaIstri()));
+        aktaPerkawinanView.getCboAgama().setSelectedItem(String.valueOf(daftarAktaPerkawinan.get(baris).getAgama()));
+        aktaPerkawinanView.getTxtNamaTokohTempatAlamat().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNamaTokohTempatDaerah()));
+        aktaPerkawinanView.getTxtTanggalBulanNikah().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTanggalBulanNikah()));
+        aktaPerkawinanView.getTxtTahunNikah().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTahunNikah()));
+        aktaPerkawinanView.getTxtTempatPerjanjianPerkawinan().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTempatPerjanjianPerkawinan()));
+        aktaPerkawinanView.getTxtSaksiHukum().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getSaksi()));
+        aktaPerkawinanView.getTxtNo().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNo()));
+        aktaPerkawinanView.getTxtTanggalPerjanjianPerkawinan().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTanggalPerjanjianPerkawinan()));
+        aktaPerkawinanView.getCboBulanPerjanjianPerkawinan().setSelectedItem(String.valueOf(daftarAktaPerkawinan.get(baris).getBulanPerjanjianPerkawinan()));
+        aktaPerkawinanView.getTxtTahunPerjanjianPerkawinan().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTahunPerjanjianPerkawinan()));
+        aktaPerkawinanView.getTxtDaerahPengesahan().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getDaerahPengesahan()));
+        aktaPerkawinanView.getTxtNoPPP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNoPPP()));
+        aktaPerkawinanView.getTxtDaerahKeluarAP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getDaerahPengeluaranAK()));
+        aktaPerkawinanView.getTxtTanggalBulanKeluarAP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTanggalPengeluaranAK()));
+        aktaPerkawinanView.getTxtTahunKeluarAP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getTahunPengeluaranAK()));
+        aktaPerkawinanView.getTxaJabatan().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getJabatan()));
+        aktaPerkawinanView.getTxtNamaJabatan().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNamaPejabat()));
+        aktaPerkawinanView.getTxtNIP().setText(String.valueOf(daftarAktaPerkawinan.get(baris).getNIP()));
+    }   
+    
+    public void tampilDataTabel(){
+        daftarAktaPerkawinan = DAOAktaPerkawinan.getDaftar();
+        aktaPerkawinan_table_model modelTableAktaPerkawinan = new aktaPerkawinan_table_model(daftarAktaPerkawinan);
+        aktaPerkawinanTableView.getTabelAktaPerkawinan().setModel(modelTableAktaPerkawinan);
+    }
+    
+    public void jumlahBaris(){
+        aktaPerkawinanTableView.getCboJumlahBaris().addItem("10");
+        aktaPerkawinanTableView.getCboJumlahBaris().addItem("20");
+        aktaPerkawinanTableView.getCboJumlahBaris().addItem("30");
+        aktaPerkawinanTableView.getCboJumlahBaris().addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+    }
+    
+    public void paginasi(){
+        Integer pageSize = 1;
+        
+        Integer totalItem=getDAOAktaPerkawinan().jumlah();
+        aktaPerkawinanPaginasi.setTotalItem(totalItem);
+        
+        Integer currentPage= Integer.parseInt(aktaPerkawinanTableView.getCboJumlahBaris().getSelectedItem().toString());
+        aktaPerkawinanPaginasi.setCurrentPage(currentPage);
+        
+        Double totalPageDouble=Math.ceil(totalItem.doubleValue()/currentPage.doubleValue());
+        
+        Integer totalPage=totalPageDouble.intValue();
+        aktaPerkawinanPaginasi.setTotalPage(totalPage);
+        
+        daftarAktaPerkawinan = getDAOAktaPerkawinan().getHalaman(pageSize, currentPage);
+        aktaPerkawinanTableView.getTxtHalamanSetiapBaris().setText(String.valueOf(pageSize));
+        aktaPerkawinanTableView.getLblTotalHalaman().setText(String.valueOf("dari "+totalPage));
+        
+        if(pageSize.equals(1)){
+            aktaPerkawinanTableView.getBtnPertama().setEnabled(false);
+            aktaPerkawinanTableView.getBtnSesudahnya().setEnabled(false);
+        }else{
+            aktaPerkawinanTableView.getBtnPertama().setEnabled(true);
+            aktaPerkawinanTableView.getBtnSesudahnya().setEnabled(true);
+        }
+        
+        if(pageSize.equals(totalPage)){
+            aktaPerkawinanTableView.getBtnSelanjutnya().setEnabled(false);
+            aktaPerkawinanTableView.getBtnSebelumnya().setEnabled(false);
+        }else{
+            aktaPerkawinanTableView.getBtnSelanjutnya().setEnabled(true);
+            aktaPerkawinanTableView.getBtnSebelumnya().setEnabled(true);
+        }
+        
+        if(pageSize<pageSize){
+            pageSize.equals(1);
+        }
+    }
+    
+    public void pertama(){
+        aktaPerkawinanPaginasi.firstPage();   
+        paginasi();
+    }
+    
+    public void Sesudah(){
+        aktaPerkawinanPaginasi.prevPage();
+        paginasi();
+    }
+    
+    public void selanjutnya(){
+        aktaPerkawinanPaginasi.nextPage();
+        paginasi();
+    }
+    
+    public void sebelumnya(){
+        aktaPerkawinanPaginasi.lastPage();
+        paginasi();
+    }
+    
+    public void totalBaris(){
+        Integer baris = aktaPerkawinanTableView.getTabelAktaPerkawinan().getRowCount();
+        aktaPerkawinanTableView.getTotalBaris().setText(String.valueOf("Total Baris "+baris));
+    }
+    public void tampilTabelView(){
+        aktaPerkawinan_table_view aktv = new aktaPerkawinan_table_view();
+        aktv.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        aktv.setLocationRelativeTo(null);
+        aktv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        aktv.setVisible(true);
+    }
+    public void cetak(){
+        String noAC = String.valueOf(cak.getTxtNoAK().getText());
+        aktaPerkawinanModel.setNoAK(noAC);
+        if(noAC.isEmpty()){
+            JOptionPane.showMessageDialog(cak, "silahkan masukan nomor akta kawin");
+        }
+        getDAOAktaPerkawinan().cetak(cak);
+    }
+    
+    public void bacaNoAK(){
+        getDAOAktaPerkawinan().bacaNoAK(cak);
+    }
+}
