@@ -1,0 +1,409 @@
+package controller;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import DAO.DAO_AktaKelahiran;
+import model.aktaKelahiran_model;
+import model.aktaKelahiran_table_model;
+import model.aktaKelahiran_paginasi_model;
+import view.aktaKelahiran_view;
+import view.aktaKelahiran_table_view;
+import view.cetakAktaKelahiran;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+public class aktaKelahiran_controller {
+    private static DAO_AktaKelahiran DAOAktaKelahiran;
+    public aktaKelahiran_model aktaKelahiranModel = new aktaKelahiran_model();
+    public List<aktaKelahiran_model> daftarAktaKelahiran;
+    public aktaKelahiran_paginasi_model aktaKelahiranPaginasi = new aktaKelahiran_paginasi_model();
+    private aktaKelahiran_view aktaKelahiranView;
+    private aktaKelahiran_table_view aktaKelahiranTableView;    
+    private cetakAktaKelahiran cal;
+    
+    public static DAO_AktaKelahiran getDaoAktaKelahiran(){
+        return DAOAktaKelahiran;
+    }
+    
+    public aktaKelahiran_controller(aktaKelahiran_view aktaKelahiranView){
+        DAOAktaKelahiran = new DAO_AktaKelahiran();
+        this.aktaKelahiranView=aktaKelahiranView;
+    }
+    
+    public aktaKelahiran_controller(aktaKelahiran_table_view aktaKelahiranTableView){
+        DAOAktaKelahiran = new DAO_AktaKelahiran();
+        this.aktaKelahiranTableView=aktaKelahiranTableView;
+    }
+    
+    public aktaKelahiran_controller(cetakAktaKelahiran cal){
+        DAOAktaKelahiran = new DAO_AktaKelahiran();
+        this.cal=cal;
+    }
+    
+    public void simpan(){
+        
+       String csl = String.valueOf(aktaKelahiranView.getTxtCSL().getText());
+       aktaKelahiranModel.setNoAL(csl);
+       String nik = String.valueOf(aktaKelahiranView.getTxtNIK().getText());
+       aktaKelahiranModel.setNIK(nik);
+       String wargaNegara = String.valueOf(aktaKelahiranView.getTxtWargaNegara().getText());
+       aktaKelahiranModel.setWargaNegara(wargaNegara);
+       String no = String.valueOf(aktaKelahiranView.getTxtNo().getText());
+       aktaKelahiranModel.setNo(no);
+       String berdasarkan = String.valueOf(aktaKelahiranView.getTxtBerdasarkan().getText());
+       aktaKelahiranModel.setAturanStbld(berdasarkan);
+       String tempatLahir = String.valueOf(aktaKelahiranView.getTxtTempatlahir().getText());
+       aktaKelahiranModel.setTempatLahir(tempatLahir);
+       String tanggalLahir = String.valueOf(aktaKelahiranView.getTxtTanggalLahir().getText());
+       aktaKelahiranModel.setTanggalBulanLahir(tanggalLahir);
+       String tahunLahir = String.valueOf(aktaKelahiranView.getTxtTahunLahir().getText());
+       aktaKelahiranModel.setTahunLahir(tahunLahir);
+       String jenisKelamin = String.valueOf(aktaKelahiranView.getCboJenisKelamin().getSelectedItem().toString());
+       aktaKelahiranModel.setJenisKelamin(jenisKelamin);
+       String namaAnak = String.valueOf(aktaKelahiranView.getTxtNamaAnak().getText());
+       aktaKelahiranModel.setNamaAnak(namaAnak);
+       String anakKe = String.valueOf(aktaKelahiranView.getTxtAnakKe().getText());
+       aktaKelahiranModel.setAnakKe(anakKe);
+       String namaSuami = String.valueOf(aktaKelahiranView.getTxtNamaSuami().getText());
+       aktaKelahiranModel.setNamaSuami(namaSuami);
+       String namaIstri = String.valueOf(aktaKelahiranView.getTxtNamaIstri().getText());
+       aktaKelahiranModel.setNamaIstri(namaIstri);
+       String tempatPembuatan = String.valueOf(aktaKelahiranView.getTxtTempatPembuatan().getText());
+       aktaKelahiranModel.setDaerahPembuatanAL(tempatPembuatan);
+       String tanggalPembuatan = String.valueOf(aktaKelahiranView.getTxtTanggalPembuatan().getText());
+       aktaKelahiranModel.setTanggalBulanPembuatanAL(tanggalPembuatan);
+       String tahunPembuatan = String.valueOf(aktaKelahiranView.getTxtTahunPembuatan().getText());
+       aktaKelahiranModel.setTahunPembuatanAL(tahunPembuatan);
+       String jabatan = String.valueOf(aktaKelahiranView.getTxaJabatan().getText());
+       aktaKelahiranModel.setJabatan(jabatan);
+       String namaPejabat =String.valueOf(aktaKelahiranView.getTxtNamaPejabat().getText());
+       aktaKelahiranModel.setNamaPejabat(namaPejabat);
+       String nip = String.valueOf(aktaKelahiranView.getTxtNip().getText());
+       aktaKelahiranModel.setNip(nip);
+       
+       if((csl.isEmpty())|(nik.isEmpty())|(wargaNegara.isEmpty())|(no.isEmpty())|(berdasarkan.isEmpty()) |
+         (tempatLahir.isEmpty())|(tanggalLahir.isEmpty())|(tahunLahir.isEmpty())|(jenisKelamin.isEmpty())|
+         (namaAnak.isEmpty())|(anakKe.isEmpty())|(namaSuami.isEmpty())|(namaIstri.isEmpty())|(tempatPembuatan.isEmpty())| 
+         (tanggalPembuatan.isEmpty())|(tahunPembuatan.isEmpty())|(jabatan.isEmpty())|(namaPejabat.isEmpty())|(nip.isEmpty())){
+           JOptionPane.showMessageDialog(aktaKelahiranView, "Silahkan lengkapi data kelahiran");
+       }else{
+           DAOAktaKelahiran.simpan(aktaKelahiranModel);
+           setEditOn();
+           aktaKelahiranView.getBtnSimpan().setEnabled(false);
+           aktaKelahiranView.getBtnUbah().setEnabled(true);
+           aktaKelahiranView.getBtnHapus().setEnabled(true);
+       }
+    }
+    
+    public void ubah(){
+       String csl = String.valueOf(aktaKelahiranView.getTxtCSL().getText());
+       aktaKelahiranModel.setNoAL(csl);
+       String nik = String.valueOf(aktaKelahiranView.getTxtNIK().getText());
+       aktaKelahiranModel.setNIK(nik);
+       String wargaNegara = String.valueOf(aktaKelahiranView.getTxtWargaNegara().getText());
+       aktaKelahiranModel.setWargaNegara(wargaNegara);
+       String no = String.valueOf(aktaKelahiranView.getTxtNo().getText());
+       aktaKelahiranModel.setNo(no);
+       String berdasarkan = String.valueOf(aktaKelahiranView.getTxtBerdasarkan().getText());
+       aktaKelahiranModel.setAturanStbld(berdasarkan);
+       String tempatLahir = String.valueOf(aktaKelahiranView.getTxtTempatlahir().getText());
+       aktaKelahiranModel.setTempatLahir(tempatLahir);
+       String tanggalLahir = String.valueOf(aktaKelahiranView.getTxtTanggalLahir().getText());
+       aktaKelahiranModel.setTanggalBulanLahir(tanggalLahir);
+       String tahunLahir = String.valueOf(aktaKelahiranView.getTxtTahunLahir().getText());
+       aktaKelahiranModel.setTahunLahir(tahunLahir);
+       String jenisKelamin = String.valueOf(aktaKelahiranView.getCboJenisKelamin().getSelectedItem().toString());
+       aktaKelahiranModel.setJenisKelamin(jenisKelamin);
+       String namaAnak = String.valueOf(aktaKelahiranView.getTxtNamaAnak().getText());
+       aktaKelahiranModel.setNamaAnak(namaAnak);
+       String anakKe = String.valueOf(aktaKelahiranView.getTxtAnakKe().getText());
+       aktaKelahiranModel.setAnakKe(anakKe);
+       String namaSuami = String.valueOf(aktaKelahiranView.getTxtNamaSuami().getText());
+       aktaKelahiranModel.setNamaSuami(namaSuami);
+       String namaIstri = String.valueOf(aktaKelahiranView.getTxtNamaIstri().getText());
+       aktaKelahiranModel.setNamaIstri(namaIstri);
+       String tempatPembuatan = String.valueOf(aktaKelahiranView.getTxtTempatPembuatan().getText());
+       aktaKelahiranModel.setDaerahPembuatanAL(tempatPembuatan);
+       String tanggalPembuatan = String.valueOf(aktaKelahiranView.getTxtTanggalPembuatan().getText());
+       aktaKelahiranModel.setTanggalBulanPembuatanAL(tanggalPembuatan);
+       String tahunPembuatan = String.valueOf(aktaKelahiranView.getTxtTahunPembuatan().getText());
+       aktaKelahiranModel.setTahunPembuatanAL(tahunPembuatan);
+       String jabatan = String.valueOf(aktaKelahiranView.getTxaJabatan().getText());
+       aktaKelahiranModel.setJabatan(jabatan);
+       String namaPejabat =String.valueOf(aktaKelahiranView.getTxtNamaPejabat().getText());
+       aktaKelahiranModel.setNamaPejabat(namaPejabat);
+       String nip = String.valueOf(aktaKelahiranView.getTxtNip().getText());
+       aktaKelahiranModel.setNip(nip);
+       
+       if((csl.isEmpty())|(nik.isEmpty())|(wargaNegara.isEmpty())|(no.isEmpty())|(berdasarkan.isEmpty()) |
+         (tempatLahir.isEmpty())|(tanggalLahir.isEmpty())|(tahunLahir.isEmpty())|(jenisKelamin.isEmpty())|
+         (namaAnak.isEmpty())|(anakKe.isEmpty())|(namaSuami.isEmpty())|(namaIstri.isEmpty())|(tempatPembuatan.isEmpty())| 
+         (tanggalPembuatan.isEmpty())|(tahunPembuatan.isEmpty())|(jabatan.isEmpty())|(namaPejabat.isEmpty())|(nip.isEmpty())){
+           JOptionPane.showMessageDialog(aktaKelahiranView, "Silahkan lengkapi data Kelahiran");
+       }else{
+           int hasil = JOptionPane.showConfirmDialog(aktaKelahiranView, "Apakah anda yakin memperbaharui atau"
+           +" mengubah data tersebut"+" "+aktaKelahiranView.getTxtCSL().getText() ,"PERHATIAN", JOptionPane.YES_NO_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+            DAOAktaKelahiran.ubah(aktaKelahiranModel);
+            setEditOn();
+            aktaKelahiranView.getBtnSimpan().setEnabled(true);
+            aktaKelahiranView.getBtnUbah().setEnabled(false);
+            aktaKelahiranView.getBtnHapus().setEnabled(true);
+           }else if(hasil==JOptionPane.NO_OPTION){
+           }
+       }
+    }
+    
+    public void hapus(){
+        String csl = String.valueOf(aktaKelahiranView.getTxtWargaNegara().getText());
+       aktaKelahiranModel.setNoAL(csl);
+       
+       if((csl.isEmpty())){
+           JOptionPane.showMessageDialog(aktaKelahiranView, "Silahkan masukan data csl");
+       }else{
+           int hasil = JOptionPane.showConfirmDialog(aktaKelahiranView, "Apakah anda yakin menghapus data tersebut"
+           +" "+aktaKelahiranView.getTxtCSL().getText(), "PERHATIAN", JOptionPane.YES_NO_CANCEL_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+                DAOAktaKelahiran.hapus(csl);
+                setEditOff();
+                kosong();
+           }else if(hasil==JOptionPane.NO_OPTION){
+           }
+       }
+    }
+    
+    public void kosong(){
+        aktaKelahiranView.getTxtCSL().setText("");
+        aktaKelahiranView.getTxtNIK().setText("");
+        aktaKelahiranView.getTxtWargaNegara().setText("");
+        aktaKelahiranView.getTxtNo().setText("");
+        aktaKelahiranView.getTxtBerdasarkan().setText("");
+        aktaKelahiranView.getTxtTempatlahir().setText("");
+        aktaKelahiranView.getTxtTanggalLahir().setText("");
+        aktaKelahiranView.getTxtTahunLahir().setText("");
+        aktaKelahiranView.getCboJenisKelamin().setSelectedIndex(0);
+        aktaKelahiranView.getTxtNamaAnak().setText("");
+        aktaKelahiranView.getTxtAnakKe().setText("");
+        aktaKelahiranView.getTxtNamaSuami().setText("");
+        aktaKelahiranView.getTxtNamaIstri().setText("");
+        aktaKelahiranView.getTxtTempatPembuatan().setText("");
+        aktaKelahiranView.getTxtTanggalPembuatan().setText("");
+        aktaKelahiranView.getTxtTahunPembuatan().setText("");
+        aktaKelahiranView.getTxaJabatan().setText("");
+        aktaKelahiranView.getTxtNamaPejabat().setText("");
+        aktaKelahiranView.getTxtNip().setText("");
+    }
+    
+    public void setEditOff(){
+        aktaKelahiranView.getTxtCSL().setEnabled(false);
+        aktaKelahiranView.getTxtNIK().setEnabled(false);
+        aktaKelahiranView.getTxtWargaNegara().setEnabled(false);
+        aktaKelahiranView.getTxtNo().setEnabled(false);
+        aktaKelahiranView.getTxtBerdasarkan().setEnabled(false);
+        aktaKelahiranView.getTxtTempatlahir().setEnabled(false);
+        aktaKelahiranView.getTxtTanggalLahir().setEnabled(false);
+        aktaKelahiranView.getTxtTahunLahir().setEnabled(false);
+        aktaKelahiranView.getCboJenisKelamin().setEnabled(false);
+        aktaKelahiranView.getTxtNamaAnak().setEnabled(false);
+        aktaKelahiranView.getTxtAnakKe().setEnabled(false);
+        aktaKelahiranView.getTxtNamaSuami().setEnabled(false);
+        aktaKelahiranView.getTxtNamaIstri().setEnabled(false);
+        aktaKelahiranView.getTxtTempatPembuatan().setEnabled(false);
+        aktaKelahiranView.getTxtTanggalPembuatan().setEnabled(false);
+        aktaKelahiranView.getTxtTahunPembuatan().setEnabled(false);
+        aktaKelahiranView.getTxaJabatan().setEnabled(false);
+        aktaKelahiranView.getTxtNamaPejabat().setEnabled(false);
+        aktaKelahiranView.getTxtNip().setEnabled(false);
+        aktaKelahiranView.getTxtCari().setEnabled(false);
+        aktaKelahiranView.getBtnCari().setEnabled(false);
+        aktaKelahiranView.getBtnSimpan().setEnabled(false);
+        aktaKelahiranView.getBtnUbah().setEnabled(false);
+        aktaKelahiranView.getBtnHapus().setEnabled(false);
+    }
+    
+    public void setEditOn(){
+        aktaKelahiranView.getTxtCSL().setEnabled(true);
+        aktaKelahiranView.getTxtNIK().setEnabled(true);
+        aktaKelahiranView.getTxtWargaNegara().setEnabled(true);
+        aktaKelahiranView.getTxtNo().setEnabled(true);
+        aktaKelahiranView.getTxtBerdasarkan().setEnabled(true);
+        aktaKelahiranView.getTxtTempatlahir().setEnabled(true);
+        aktaKelahiranView.getTxtTanggalLahir().setEnabled(true);
+        aktaKelahiranView.getTxtTahunLahir().setEnabled(true);
+        aktaKelahiranView.getCboJenisKelamin().setEnabled(true);
+        aktaKelahiranView.getTxtNamaAnak().setEnabled(true);
+        aktaKelahiranView.getTxtAnakKe().setEnabled(true);
+        aktaKelahiranView.getTxtNamaSuami().setEnabled(true);
+        aktaKelahiranView.getTxtNamaIstri().setEnabled(true);
+        aktaKelahiranView.getTxtTempatPembuatan().setEnabled(true);
+        aktaKelahiranView.getTxtTanggalPembuatan().setEnabled(true);
+        aktaKelahiranView.getTxtTahunPembuatan().setEnabled(true);
+        aktaKelahiranView.getTxaJabatan().setEnabled(true);
+        aktaKelahiranView.getTxtNamaPejabat().setEnabled(true);
+        aktaKelahiranView.getTxtNip().setEnabled(true);
+        aktaKelahiranView.getTxtCari().setEnabled(true);
+    }
+    
+    public void konten(){
+        daftarAktaKelahiran = getDaoAktaKelahiran().getCariData(aktaKelahiranView.getTxtCari().getText());
+        aktaKelahiran_table_model tabelAktaKelahiran = new aktaKelahiran_table_model(daftarAktaKelahiran);
+     
+        aktaKelahiranView.getTxtCSL().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 0)));
+        aktaKelahiranView.getTxtNIK().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 1)));
+        aktaKelahiranView.getTxtWargaNegara().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 2)));
+        aktaKelahiranView.getTxtNo().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 3)));
+        aktaKelahiranView.getTxtBerdasarkan().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 4)));
+        aktaKelahiranView.getTxtTempatlahir().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 5)));
+        aktaKelahiranView.getTxtTanggalLahir().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 6)));
+        aktaKelahiranView.getTxtTahunLahir().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 7)));
+        aktaKelahiranView.getTxtNamaAnak().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 8)));
+        aktaKelahiranView.getTxtAnakKe().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 9)));
+        aktaKelahiranView.getCboJenisKelamin().setSelectedItem(String.valueOf(tabelAktaKelahiran.getValueAt(0, 10)));
+        aktaKelahiranView.getTxtNamaSuami().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 11)));
+        aktaKelahiranView.getTxtNamaIstri().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 12)));
+        aktaKelahiranView.getTxtTempatPembuatan().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 13)));
+        aktaKelahiranView.getTxtTanggalPembuatan().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 14)));
+        aktaKelahiranView.getTxtTahunPembuatan().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 15)));
+        aktaKelahiranView.getTxaJabatan().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 16)));
+        aktaKelahiranView.getTxtNamaPejabat().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 17)));
+        aktaKelahiranView.getTxtNip().setText(String.valueOf(tabelAktaKelahiran.getValueAt(0, 18)));
+    }
+    
+    public void kontenTabel(){
+        daftarAktaKelahiran = getDaoAktaKelahiran().getCariData(aktaKelahiranTableView.getTxtCari().getText());
+        aktaKelahiran_table_model tabelAktaKelahiran = new aktaKelahiran_table_model(daftarAktaKelahiran);
+        aktaKelahiranTableView.getTableAktaKelahiran().setModel(tabelAktaKelahiran);
+    }
+    
+    public void cariData(){
+        if(!aktaKelahiranView.getTxtCari().getText().trim().isEmpty()){
+            DAOAktaKelahiran.getCariData(aktaKelahiranView.getTxtCari().getText());
+            konten();
+            aktaKelahiranView.getBtnSimpan().setEnabled(true);
+            aktaKelahiranView.getBtnUbah().setEnabled(true);
+            aktaKelahiranView.getBtnHapus().setEnabled(true);
+        }else{
+            JOptionPane.showMessageDialog(aktaKelahiranView, "Mohon Tekan Tombol Pencarian");
+        }
+    }
+    
+    public void cariDataTable(){
+        if(!aktaKelahiranTableView.getTxtCari().getText().trim().isEmpty()){
+            DAOAktaKelahiran.getCariData(aktaKelahiranTableView.getTxtCari().getText());
+            kontenTabel();
+        }else{
+            JOptionPane.showMessageDialog(aktaKelahiranTableView, "Mohon Tekan Tombol Pencarian");
+        }
+    }
+    
+    public void tampilData(){
+        daftarAktaKelahiran = getDaoAktaKelahiran().getDaftar();
+        aktaKelahiran_table_model aktaKelahiranTableModel = new aktaKelahiran_table_model(daftarAktaKelahiran);
+        aktaKelahiranTableView.getTableAktaKelahiran().setModel(aktaKelahiranTableModel);
+    }
+    
+    public void jumlahBaris(){
+        aktaKelahiranTableView.getCboJumlahBaris().addItem("10");
+        aktaKelahiranTableView.getCboJumlahBaris().addItem("20");
+        aktaKelahiranTableView.getCboJumlahBaris().addItem("30");
+        aktaKelahiranTableView.getCboJumlahBaris().addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                throw new UnsupportedOperationException("Not supported yet."); 
+            }
+        });
+    }
+        
+        public void paginasi(){
+        Integer pageSize = 1;
+        
+        Integer totalItem=getDaoAktaKelahiran().jumlah();
+        aktaKelahiranPaginasi.setTotalItem(totalItem);
+        
+        Integer currentPage= Integer.parseInt(aktaKelahiranTableView.getCboJumlahBaris().getSelectedItem().toString());
+        aktaKelahiranPaginasi.setCurrentPage(currentPage);
+        
+        Double totalPageDouble=Math.ceil(totalItem.doubleValue()/currentPage.doubleValue());
+        
+        Integer totalPage=totalPageDouble.intValue();
+        aktaKelahiranPaginasi.setTotalPage(totalPage);
+        
+        daftarAktaKelahiran = getDaoAktaKelahiran().getHalaman(pageSize, currentPage);
+        aktaKelahiranTableView.getTxtHalamanSetiapBaris().setText(String.valueOf(pageSize));
+        aktaKelahiranTableView.getLblTotalHalaman().setText(String.valueOf("dari "+totalPage));
+        
+        if(pageSize.equals(1)){
+            aktaKelahiranTableView.getBtnPertama().setEnabled(false);
+            aktaKelahiranTableView.getBtnSesudahnya().setEnabled(false);
+        }else{
+            aktaKelahiranTableView.getBtnPertama().setEnabled(true);
+            aktaKelahiranTableView.getBtnSesudahnya().setEnabled(true);
+        }
+        
+        if(pageSize.equals(totalPage)){
+            aktaKelahiranTableView.getBtnSelanjutnya().setEnabled(false);
+            aktaKelahiranTableView.getBtnSebelumnya().setEnabled(false);
+        }else{
+            aktaKelahiranTableView.getBtnSelanjutnya().setEnabled(true);
+            aktaKelahiranTableView.getBtnSebelumnya().setEnabled(true);
+        }
+        
+        if(pageSize<pageSize){
+            pageSize.equals(1);
+        }
+    }
+    
+    public void pertama(){
+        aktaKelahiranPaginasi.firstPage();   
+        paginasi();
+    }
+    
+    public void Sesudah(){
+        aktaKelahiranPaginasi.prevPage();
+        paginasi();
+    }
+    
+    public void selanjutnya(){
+        aktaKelahiranPaginasi.nextPage();
+        paginasi();
+    }
+    
+    public void sebelumnya(){
+        aktaKelahiranPaginasi.lastPage();
+        paginasi();
+    }
+    
+    public void totalBaris(){
+        Integer baris = aktaKelahiranTableView.getTableAktaKelahiran().getRowCount();
+        aktaKelahiranTableView.getTotalBaris().setText(String.valueOf("Total Baris "+baris));
+    }
+    
+  
+    public void tampilTabelView(){
+        aktaKelahiran_table_view altv = new aktaKelahiran_table_view();
+        altv.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        altv.setLocationRelativeTo(null);
+        altv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        altv.setVisible(true);
+    }
+    
+    public void cetak(){
+        String noAL = String.valueOf(cal.getTxtCetak().getText());
+        aktaKelahiranModel.setNoAL(noAL);
+        if(noAL.isEmpty()){
+            JOptionPane.showMessageDialog(cal, "silahkan masukan nomor akta lahir");
+        }
+        getDaoAktaKelahiran().cetak(cal);
+    }
+    
+    public void bacaNoAL(){
+        getDaoAktaKelahiran().bacaNoAL(cal);
+    }
+}
