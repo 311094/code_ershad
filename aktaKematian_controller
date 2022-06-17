@@ -1,0 +1,453 @@
+package controller;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import DAO.DAO_AktaKematian;
+import model.aktaKematian_model;
+import model.aktaKematian_table_model;
+import model.aktaKematian_Paginasi_model;
+import view.aktaKematian_view;
+import view.aktaKematian_table_view;
+import view.cetakAktaKematian;
+import java.util.List;
+import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+
+public class aktaKematian_controller {
+    private static DAO_AktaKematian DAOAktaKematian;
+    public aktaKematian_model aktaKematianModel = new aktaKematian_model();
+    public List<aktaKematian_model>daftarAktaKematianModel;
+    public aktaKematian_Paginasi_model aktaKematianPaginasi = new aktaKematian_Paginasi_model();
+    private aktaKematian_view aktaKematianView;
+    private aktaKematian_table_view aktaKematianTableView;
+    private cetakAktaKematian cam;
+    
+    public aktaKematian_controller(aktaKematian_view aktaKematianView){
+        DAOAktaKematian = new DAO_AktaKematian();
+        this.aktaKematianView=aktaKematianView;
+    }
+    
+    public aktaKematian_controller(aktaKematian_table_view aktaKematianTableView){
+        DAOAktaKematian = new DAO_AktaKematian();
+        this.aktaKematianTableView=aktaKematianTableView;
+    }
+    
+    public aktaKematian_controller(cetakAktaKematian cam){
+        DAOAktaKematian = new DAO_AktaKematian();
+        this.cam=cam;
+    }
+    
+    public static DAO_AktaKematian getDAOAktaKematian(){
+        return DAOAktaKematian;
+    }
+    
+    public void simpan(){
+        String noAM = String.valueOf(aktaKematianView.getTxtNoAM().getText());
+        aktaKematianModel.setNoAM(noAM);
+        String nik = String.valueOf(aktaKematianView.getTxtNIK().getText());
+        aktaKematianModel.setNIK(nik);
+        String wargaNegara = String.valueOf(aktaKematianView.getTxtWargaNegara().getText());
+        aktaKematianModel.setWargaNegara(wargaNegara);
+        String no = String.valueOf(aktaKematianView.getTxtNo().getText());
+        aktaKematianModel.setNo(no);
+        String aturanStbld = String.valueOf(aktaKematianView.getTxtAturanStbld().getText());
+        aktaKematianModel.setAturanStbld(aturanStbld);
+        String daerah = String.valueOf(aktaKematianView.getTxtDaerah().getText());
+        aktaKematianModel.setDaerah(daerah);
+        String tanggalBulan = String.valueOf(aktaKematianView.getTxtTanggalBulan().getText());
+        aktaKematianModel.setTanggalBulan(tanggalBulan);
+        String tahun = String.valueOf(aktaKematianView.getTxtTahun().getText());
+        aktaKematianModel.setTahun(tahun);
+        String nama = String.valueOf(aktaKematianView.getTxtNama().getText());
+        aktaKematianModel.setNama(nama);
+        String tempatLahir = String.valueOf(aktaKematianView.getTxtTempatLahir().getText());
+        aktaKematianModel.setTempatLahir(tempatLahir);
+        String tglBlnLahir = String.valueOf(aktaKematianView.getTxtTanggalBulanLahir().getText());
+        aktaKematianModel.setTanggalBulanLahir(tglBlnLahir);
+        String thnLahir = String.valueOf(aktaKematianView.getTxtTahunLahir().getText());
+        aktaKematianModel.setTahunLahir(thnLahir);
+        String anakKe = String.valueOf(aktaKematianView.getTxtAnakKe().getText());
+        aktaKematianModel.setAnakKe(anakKe);
+        String jk = String.valueOf(aktaKematianView.getCboJenisKelamin().getSelectedItem().toString());
+        aktaKematianModel.setJenisKelamin(jk);
+        String suami = String.valueOf(aktaKematianView.getTxtSuami().getText());
+        aktaKematianModel.setSuami(suami);
+        String istri = String.valueOf(aktaKematianView.getTxtIstri().getText());
+        aktaKematianModel.setIstri(istri);
+        String drhPengeluaranAM = String.valueOf(aktaKematianView.getTxtDaerahPengeluaranAM().getText());
+        aktaKematianModel.setDaerahPengeluaranAM(drhPengeluaranAM);
+        String tglBlnPengeluaranAM = String.valueOf(aktaKematianView.getTxtTanggalBulanPengeluaranAM().getText());
+        aktaKematianModel.setTanggalBulanPengeluaranAM(tglBlnPengeluaranAM);
+        String thnPengeluaranAM = String.valueOf(aktaKematianView.getTxtTahunPengeluaranAM().getText());
+        aktaKematianModel.setTahunPengeluaranAM(thnPengeluaranAM);
+        String jabatan = String.valueOf(aktaKematianView.getTxaJabatan().getText());
+        aktaKematianModel.setJabatan(jabatan);
+        String namaPejabat = String.valueOf(aktaKematianView.getTxtNamaPejabat().getText());
+        aktaKematianModel.setNamaPejabat(namaPejabat);
+        String nip = String.valueOf(aktaKematianView.getTxtNIP().getText());
+        aktaKematianModel.setNIP(nip);
+        
+        if((noAM.isEmpty())|(nik.isEmpty())|(wargaNegara.isEmpty())|(no.isEmpty())|(aturanStbld.isEmpty())|
+          (daerah.isEmpty())|(tanggalBulan.isEmpty())|(tahun.isEmpty())|(nama.isEmpty())|(tempatLahir.isEmpty())|
+          (tglBlnLahir.isEmpty())|(thnLahir.isEmpty())|(anakKe.isEmpty())|(jk.isEmpty())|(suami.isEmpty())|
+          (istri.isEmpty())|(drhPengeluaranAM.isEmpty())|(tglBlnPengeluaranAM.isEmpty())|
+          (thnPengeluaranAM.isEmpty())|(jabatan.isEmpty())|(nip.isEmpty())){
+            JOptionPane.showMessageDialog(aktaKematianView, "Silahkan Lengkapi Data Kematian");
+        }else{
+            DAOAktaKematian.simpan(aktaKematianModel);
+            aktaKematianView.getBtnSimpan().setEnabled(false);
+            aktaKematianView.getBtnUbah().setEnabled(true);
+            aktaKematianView.getBtnHapus().setEnabled(true);
+        }
+    }
+    
+    public void ubah(){
+        String noAM = String.valueOf(aktaKematianView.getTxtNoAM().getText());
+        aktaKematianModel.setNoAM(noAM);
+        String nik = String.valueOf(aktaKematianView.getTxtNIK().getText());
+        aktaKematianModel.setNIK(nik);
+        String wargaNegara = String.valueOf(aktaKematianView.getTxtWargaNegara().getText());
+        aktaKematianModel.setWargaNegara(wargaNegara);
+        String no = String.valueOf(aktaKematianView.getTxtNo().getText());
+        aktaKematianModel.setNo(no);
+        String aturanStbld = String.valueOf(aktaKematianView.getTxtAturanStbld().getText());
+        aktaKematianModel.setAturanStbld(aturanStbld);
+        String daerah = String.valueOf(aktaKematianView.getTxtDaerah().getText());
+        aktaKematianModel.setDaerah(daerah);
+        String tanggalBulan = String.valueOf(aktaKematianView.getTxtTanggalBulan().getText());
+        aktaKematianModel.setTanggalBulan(tanggalBulan);
+        String tahun = String.valueOf(aktaKematianView.getTxtTahun().getText());
+        aktaKematianModel.setTahun(tahun);
+        String nama = String.valueOf(aktaKematianView.getTxtNama().getText());
+        aktaKematianModel.setNama(nama);
+        String tempatLahir = String.valueOf(aktaKematianView.getTxtTempatLahir().getText());
+        aktaKematianModel.setTempatLahir(tempatLahir);
+        String tglBlnLahir = String.valueOf(aktaKematianView.getTxtTanggalBulanLahir().getText());
+        aktaKematianModel.setTanggalBulanLahir(tglBlnLahir);
+        String thnLahir = String.valueOf(aktaKematianView.getTxtTahunLahir().getText());
+        aktaKematianModel.setTahunLahir(thnLahir);
+        String anakKe = String.valueOf(aktaKematianView.getTxtAnakKe().getText());
+        aktaKematianModel.setAnakKe(anakKe);
+        String jk = String.valueOf(aktaKematianView.getCboJenisKelamin().getSelectedItem().toString());
+        aktaKematianModel.setJenisKelamin(jk);
+        String suami = String.valueOf(aktaKematianView.getTxtSuami().getText());
+        aktaKematianModel.setSuami(suami);
+        String istri = String.valueOf(aktaKematianView.getTxtIstri().getText());
+        aktaKematianModel.setIstri(istri);
+        String drhPengeluaranAM = String.valueOf(aktaKematianView.getTxtDaerahPengeluaranAM().getText());
+        aktaKematianModel.setDaerahPengeluaranAM(drhPengeluaranAM);
+        String tglBlnPengeluaranAM = String.valueOf(aktaKematianView.getTxtTanggalBulanPengeluaranAM().getText());
+        aktaKematianModel.setTanggalBulanPengeluaranAM(tglBlnPengeluaranAM);
+        String thnPengeluaranAM = String.valueOf(aktaKematianView.getTxtTahunPengeluaranAM().getText());
+        aktaKematianModel.setTahunPengeluaranAM(thnPengeluaranAM);
+        String jabatan = String.valueOf(aktaKematianView.getTxaJabatan().getText());
+        aktaKematianModel.setJabatan(jabatan);
+        String namaPejabat = String.valueOf(aktaKematianView.getTxtNamaPejabat().getText());
+        aktaKematianModel.setNamaPejabat(namaPejabat);
+        String nip = String.valueOf(aktaKematianView.getTxtNIP().getText());
+        aktaKematianModel.setNIP(nip);
+        
+        if((noAM.isEmpty())|(nik.isEmpty())|(wargaNegara.isEmpty())|(no.isEmpty())|(aturanStbld.isEmpty())|
+          (daerah.isEmpty())|(tanggalBulan.isEmpty())|(tahun.isEmpty())|(nama.isEmpty())|(tempatLahir.isEmpty())|
+          (tglBlnLahir.isEmpty())|(thnLahir.isEmpty())|(anakKe.isEmpty())|(jk.isEmpty())|(suami.isEmpty())|
+          (istri.isEmpty())|(drhPengeluaranAM.isEmpty())|(tglBlnPengeluaranAM.isEmpty())|
+          (thnPengeluaranAM.isEmpty())|(jabatan.isEmpty())|(nip.isEmpty())){
+            JOptionPane.showMessageDialog(aktaKematianView, "Silahkan Lengkapi Data Kematian");
+        }else{
+            int hasil = JOptionPane.showConfirmDialog(aktaKematianView, "Apakah anda yakin memperbaharui atau"
+            +" mengubah data tersebut"+" "+aktaKematianView.getTxtNoAM().getText(),"PERHATIAN", JOptionPane.YES_NO_OPTION);
+            if(hasil==JOptionPane.YES_OPTION){
+                DAOAktaKematian.ubah(aktaKematianModel);
+                aktaKematianView.getBtnSimpan().setEnabled(false);
+                aktaKematianView.getBtnUbah().setEnabled(false);
+                aktaKematianView.getBtnHapus().setEnabled(false);
+            }else if(hasil==JOptionPane.NO_OPTION){
+            }
+        }
+    }
+    
+    public void hapus(){
+        String noAM = String.valueOf(aktaKematianView.getTxtNoAM().getText());
+        aktaKematianModel.setNoAM(noAM);
+        
+        if((noAM.isEmpty())){
+            JOptionPane.showMessageDialog(aktaKematianView, "Silahkan masukan data No.Akta Mati");
+        }else{
+            int hasil = JOptionPane.showConfirmDialog(aktaKematianView, "Apakah anda yakin menghapus data tersebut"
+            +" "+aktaKematianView.getTxtNoAM().getText(),"PERHATIAN",JOptionPane.YES_NO_OPTION);
+            if(hasil==JOptionPane.YES_OPTION){
+                DAOAktaKematian.hapus(noAM);
+                setEditOff();
+                kosong();
+            }else if(hasil==JOptionPane.NO_OPTION){
+            }
+        }
+    }
+    
+    public void kosong(){
+    aktaKematianView.getTxtNoAM().setText("");
+    aktaKematianView.getTxtNIK().setText("");
+    aktaKematianView.getTxtWargaNegara().setText("");
+    aktaKematianView.getTxtNo().setText("");
+    aktaKematianView.getTxtAturanStbld().setText("");
+    aktaKematianView.getTxtDaerah().setText("");
+    aktaKematianView.getTxtTanggalBulan().setText("");
+    aktaKematianView.getTxtTahun().setText("");
+    aktaKematianView.getTxtNama().setText("");
+    aktaKematianView.getTxtTempatLahir().setText("");
+    aktaKematianView.getTxtTanggalBulanLahir().setText("");
+    aktaKematianView.getTxtTahunLahir().setText("");
+    aktaKematianView.getTxtAnakKe().setText("");
+    aktaKematianView.getCboJenisKelamin().setSelectedIndex(0);
+    aktaKematianView.getTxtSuami().setText("");
+    aktaKematianView.getTxtIstri().setText("");
+    aktaKematianView.getTxtDaerahPengeluaranAM().setText("");
+    aktaKematianView.getTxtTanggalBulanPengeluaranAM().setText("");
+    aktaKematianView.getTxtTahunPengeluaranAM().setText("");
+    aktaKematianView.getTxaJabatan().setText("");
+    aktaKematianView.getTxtNamaPejabat().setText("");
+    aktaKematianView.getTxtNIP().setText("");
+    }
+    
+    public void setEditOff(){
+    aktaKematianView.getTxtNoAM().setEnabled(false);
+    aktaKematianView.getTxtNIK().setEnabled(false);
+    aktaKematianView.getTxtWargaNegara().setEnabled(false);
+    aktaKematianView.getTxtNo().setEnabled(false);
+    aktaKematianView.getTxtAturanStbld().setEnabled(false);
+    aktaKematianView.getTxtDaerah().setEnabled(false);
+    aktaKematianView.getTxtTanggalBulan().setEnabled(false);
+    aktaKematianView.getTxtTahun().setEnabled(false);
+    aktaKematianView.getTxtNama().setEnabled(false);
+    aktaKematianView.getTxtTempatLahir().setEnabled(false);
+    aktaKematianView.getTxtTanggalBulanLahir().setEnabled(false);
+    aktaKematianView.getTxtTahunLahir().setEnabled(false);
+    aktaKematianView.getTxtAnakKe().setEnabled(false);
+    aktaKematianView.getCboJenisKelamin().setEnabled(false);
+    aktaKematianView.getTxtSuami().setEnabled(false);
+    aktaKematianView.getTxtIstri().setEnabled(false);
+    aktaKematianView.getTxtDaerahPengeluaranAM().setEnabled(false);
+    aktaKematianView.getTxtTanggalBulanPengeluaranAM().setEnabled(false);
+    aktaKematianView.getTxtTahunPengeluaranAM().setEnabled(false);
+    aktaKematianView.getTxaJabatan().setEnabled(false);
+    aktaKematianView.getTxtNamaPejabat().setEnabled(false);
+    aktaKematianView.getTxtNIP().setEnabled(false);
+    aktaKematianView.getTxtCari().setEnabled(false);
+    aktaKematianView.getBtnCari().setEnabled(false);
+    aktaKematianView.getBtnSimpan().setEnabled(false);
+    aktaKematianView.getBtnUbah().setEnabled(false);
+    aktaKematianView.getBtnHapus().setEnabled(false);
+    }
+    
+    public void setEditOn(){
+    aktaKematianView.getTxtNoAM().setEnabled(true);
+    aktaKematianView.getTxtNIK().setEnabled(true);
+    aktaKematianView.getTxtWargaNegara().setEnabled(true);
+    aktaKematianView.getTxtNo().setEnabled(true);
+    aktaKematianView.getTxtAturanStbld().setEnabled(true);
+    aktaKematianView.getTxtDaerah().setEnabled(true);
+    aktaKematianView.getTxtTanggalBulan().setEnabled(true);
+    aktaKematianView.getTxtTahun().setEnabled(true);
+    aktaKematianView.getTxtNama().setEnabled(true);
+    aktaKematianView.getTxtTempatLahir().setEnabled(true);
+    aktaKematianView.getTxtTanggalBulanLahir().setEnabled(true);
+    aktaKematianView.getTxtTahunLahir().setEnabled(true);
+    aktaKematianView.getTxtAnakKe().setEnabled(true);
+    aktaKematianView.getCboJenisKelamin().setEnabled(true);
+    aktaKematianView.getTxtSuami().setEnabled(true);
+    aktaKematianView.getTxtIstri().setEnabled(true);
+    aktaKematianView.getTxtDaerahPengeluaranAM().setEnabled(true);
+    aktaKematianView.getTxtTanggalBulanPengeluaranAM().setEnabled(true);
+    aktaKematianView.getTxtTahunPengeluaranAM().setEnabled(true);
+    aktaKematianView.getTxaJabatan().setEnabled(true);
+    aktaKematianView.getTxtNamaPejabat().setEnabled(true);
+    aktaKematianView.getTxtNIP().setEnabled(true);
+    aktaKematianView.getTxtCari().setEnabled(true);
+    }
+    
+    public void konten(){
+        daftarAktaKematianModel = DAOAktaKematian.getCariData(aktaKematianView.getTxtCari().getText());
+        aktaKematian_table_model tabelAktaKematian = new aktaKematian_table_model(daftarAktaKematianModel);
+        
+        aktaKematianView.getTxtNoAM().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 0)));
+        aktaKematianView.getTxtNIK().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 1)));
+        aktaKematianView.getTxtWargaNegara().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 2)));
+        aktaKematianView.getTxtNo().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 3)));
+        aktaKematianView.getTxtAturanStbld().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 4)));
+        aktaKematianView.getTxtDaerah().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 5)));
+        aktaKematianView.getTxtTanggalBulan().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 6)));
+        aktaKematianView.getTxtTahun().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 7)));
+        aktaKematianView.getTxtNama().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 8)));
+        aktaKematianView.getTxtTempatLahir().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 9)));
+        aktaKematianView.getTxtTanggalBulanLahir().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 10)));
+        aktaKematianView.getTxtTahunLahir().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 11)));
+        aktaKematianView.getTxtAnakKe().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 12)));
+        aktaKematianView.getCboJenisKelamin().setSelectedItem(tabelAktaKematian.getValueAt(0, 13));
+        aktaKematianView.getTxtSuami().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 14)));
+        aktaKematianView.getTxtIstri().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 15)));
+        aktaKematianView.getTxtDaerahPengeluaranAM().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 16)));
+        aktaKematianView.getTxtTanggalBulanPengeluaranAM().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 17)));
+        aktaKematianView.getTxtTahunPengeluaranAM().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 18)));
+        aktaKematianView.getTxaJabatan().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 19)));
+        aktaKematianView.getTxtNamaPejabat().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 20)));
+        aktaKematianView.getTxtNIP().setText(String.valueOf(tabelAktaKematian.getValueAt(0, 21)));
+    }
+    
+    public void kontenTabel(){
+        daftarAktaKematianModel = DAOAktaKematian.getCariData(aktaKematianView.getTxtCari().getText());
+        aktaKematian_table_model tabelAktaKematian = new aktaKematian_table_model(daftarAktaKematianModel);
+        aktaKematianTableView.getTableAktaKematian().setModel(tabelAktaKematian);
+    }
+    
+    public void cariData(){
+        if(!aktaKematianView.getTxtCari().getText().trim().isEmpty()){
+            DAOAktaKematian.getCariData(aktaKematianView.getTxtCari().getText());
+            konten();
+            aktaKematianView.getBtnSimpan().setEnabled(true);
+            aktaKematianView.getBtnUbah().setEnabled(true);
+            aktaKematianView.getBtnHapus().setEnabled(true);
+        }else{
+            JOptionPane.showMessageDialog(aktaKematianView, "Mohon Tekan Tombol Pencarian");
+        }
+    }
+    
+    public void cariDataTabel(){
+        if(!aktaKematianView.getTxtCari().getText().trim().isEmpty()){
+            DAOAktaKematian.getCariData(aktaKematianTableView.getTxtCari().getText());
+            kontenTabel();
+        }
+    }
+    
+    public void kontenBarisData(int baris){
+        aktaKematianView.getTxtNoAM().setText(String.valueOf(daftarAktaKematianModel.get(baris).getNoAM()));
+        aktaKematianView.getTxtNIK().setText(String.valueOf(daftarAktaKematianModel.get(baris).getNIK()));
+        aktaKematianView.getTxtWargaNegara().setText(String.valueOf(daftarAktaKematianModel.get(baris).getWargaNegara()));
+        aktaKematianView.getTxtNo().setText(String.valueOf(daftarAktaKematianModel.get(baris).getNo()));
+        aktaKematianView.getTxtAturanStbld().setText(String.valueOf(daftarAktaKematianModel.get(baris).getAturanStbld()));
+        aktaKematianView.getTxtDaerah().setText(String.valueOf(daftarAktaKematianModel.get(baris).getDaerah()));
+        aktaKematianView.getTxtTanggalBulan().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTanggalBulan()));
+        aktaKematianView.getTxtTahun().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTahun()));
+        aktaKematianView.getTxtNama().setText(String.valueOf(daftarAktaKematianModel.get(baris).getNama()));
+        aktaKematianView.getTxtTempatLahir().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTempatLahir()));
+        aktaKematianView.getTxtTanggalBulanLahir().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTanggalBulanLahir()));
+        aktaKematianView.getTxtTahunLahir().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTahunLahir()));
+        aktaKematianView.getTxtAnakKe().setText(String.valueOf(daftarAktaKematianModel.get(baris).getAnakKe()));
+        aktaKematianView.getCboJenisKelamin().setSelectedItem(daftarAktaKematianModel.get(baris).getJenisKelamin());
+        aktaKematianView.getTxtSuami().setText(String.valueOf(daftarAktaKematianModel.get(baris).getSuami()));
+        aktaKematianView.getTxtIstri().setText(String.valueOf(daftarAktaKematianModel.get(baris).getIstri()));
+        aktaKematianView.getTxtDaerahPengeluaranAM().setText(String.valueOf(daftarAktaKematianModel.get(baris).getDaerahPengeluaranAM()));
+        aktaKematianView.getTxtTanggalBulanPengeluaranAM().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTanggalBulanPengeluaranAM()));
+        aktaKematianView.getTxtTahunPengeluaranAM().setText(String.valueOf(daftarAktaKematianModel.get(baris).getTahunPengeluaranAM()));
+        aktaKematianView.getTxaJabatan().setText(String.valueOf(daftarAktaKematianModel.get(baris).getJabatan()));
+        aktaKematianView.getTxtNamaPejabat().setText(String.valueOf(daftarAktaKematianModel.get(baris).getNamaPejabat()));
+        aktaKematianView.getTxtNIP().setText(String.valueOf(daftarAktaKematianModel.get(baris).getNIP()));
+    }
+    
+    public void tampilData(){
+        daftarAktaKematianModel = DAOAktaKematian.getDaftar();
+        aktaKematian_table_model aktaKematianTableModel = new aktaKematian_table_model(daftarAktaKematianModel);
+        aktaKematianTableView.getTableAktaKematian().setModel(aktaKematianTableModel);
+    }
+    
+    public void jumlahBaris(){
+        aktaKematianTableView.getCboJumlahBaris().addItem("10");
+        aktaKematianTableView.getCboJumlahBaris().addItem("20");
+        aktaKematianTableView.getCboJumlahBaris().addItem("30");
+        aktaKematianTableView.getCboJumlahBaris().addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+    }
+    
+    public void paginasi(){
+        Integer pageSize = 1;
+        
+        Integer totalItem=getDAOAktaKematian().jumlah();
+        aktaKematianPaginasi.setTotalItem(totalItem);
+        
+        Integer currentPage= Integer.parseInt(aktaKematianTableView.getCboJumlahBaris().getSelectedItem().toString());
+        aktaKematianPaginasi.setCurrentPage(currentPage);
+        
+        Double totalPageDouble=Math.ceil(totalItem.doubleValue()/currentPage.doubleValue());
+        
+        Integer totalPage=totalPageDouble.intValue();
+        aktaKematianPaginasi.setTotalPage(totalPage);
+        
+        daftarAktaKematianModel = getDAOAktaKematian().getHalaman(pageSize, currentPage);
+        aktaKematianTableView.getTxtHalamanSetiapBaris().setText(String.valueOf(pageSize));
+        aktaKematianTableView.getLblTotalHalaman().setText(String.valueOf("dari "+totalPage));
+        
+        if(pageSize.equals(1)){
+            aktaKematianTableView.getBtnPertama().setEnabled(false);
+            aktaKematianTableView.getBtnSesudahnya().setEnabled(false);
+        }else{
+            aktaKematianTableView.getBtnPertama().setEnabled(true);
+            aktaKematianTableView.getBtnSesudahnya().setEnabled(true);
+        }
+        
+        if(pageSize.equals(totalPage)){
+            aktaKematianTableView.getBtnSelanjutnya().setEnabled(false);
+            aktaKematianTableView.getBtnSebelumnya().setEnabled(false);
+        }else{
+            aktaKematianTableView.getBtnSelanjutnya().setEnabled(true);
+            aktaKematianTableView.getBtnSebelumnya().setEnabled(true);
+        }
+        
+        if(pageSize<pageSize){
+            pageSize.equals(1);
+        }
+    }
+    
+    public void pertama(){
+        aktaKematianPaginasi.firstPage();   
+        paginasi();
+    }
+    
+    public void Sesudah(){
+        aktaKematianPaginasi.prevPage();
+        paginasi();
+    }
+    
+    public void selanjutnya(){
+        aktaKematianPaginasi.nextPage();
+        paginasi();
+    }
+    
+    public void sebelumnya(){
+        aktaKematianPaginasi.lastPage();
+        paginasi();
+    }
+    
+    public void totalBaris(){
+        Integer baris = aktaKematianTableView.getTableAktaKematian().getRowCount();
+        aktaKematianTableView.getTotalBaris().setText(String.valueOf("Total Baris "+baris));
+    }
+    public void tampilTabelView(){
+        aktaKematian_table_view amtv = new aktaKematian_table_view();
+        amtv.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        amtv.setLocationRelativeTo(null);
+        amtv.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        amtv.setVisible(true);
+    }
+    
+    public void cetak(){
+        String noAM = String.valueOf(cam.getTxtNoAM().getText());
+        aktaKematianModel.setNoAM(noAM);
+        if(noAM.isEmpty()){
+            JOptionPane.showMessageDialog(cam, "silahkan masukan nomor akta cerai");
+        }
+        getDAOAktaKematian().cetak(cam);
+    }
+    
+    public void bacaNoAM(){
+        getDAOAktaKematian().bacaNoAM(cam);
+    }
+}
