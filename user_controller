@@ -1,0 +1,160 @@
+package controller;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import DAO.DAO_User;
+import model.user_model;
+import model.user_table_model;
+import view.user_view;
+import java.util.List;
+import javax.swing.JOptionPane;
+
+public class user_controller {
+    private static DAO_User DAOUser;
+    final private user_model userModel = new user_model();
+    public List<user_model> daftarUserModel;
+    final private user_view userView;
+    
+    public user_controller(user_view userView){
+        DAOUser = new DAO_User();
+        this.userView=userView;
+    }
+    
+    public static DAO_User getDaoStaff(){
+        return DAOUser;
+    }
+    
+    public void simpan(){
+        String nip = String.valueOf(userView.getTxtNIP().getText());
+        userModel.setNIP(nip);
+        String nama = String.valueOf(userView.getTxtNama().getText());
+        userModel.setNama(nama);
+        String jabatan = String.valueOf(userView.getTxaJabatan().getText());
+        userModel.setJabatan(jabatan);
+        String username = String.valueOf(userView.getTxtUsername().getText());
+        userModel.setUsername(username);
+        String password = String.valueOf(userView.getTxtPassword().getText());
+        userModel.setPassword(password);
+        String hakAkses = String.valueOf(userView.getCboHakAkses().getSelectedItem().toString());
+        userModel.setHakAkses(hakAkses);
+        if((nip.isEmpty())|(nama.isEmpty())|(jabatan.isEmpty())|(username.isEmpty())|(password.isEmpty())|
+          (hakAkses.isEmpty())){
+            JOptionPane.showMessageDialog(userView, "Silahkan Lengkapi Identitas Anda");
+        }else{
+            getDaoStaff().simpan(userModel);
+            kontenTabel();
+            userView.getBtnSimpan().setEnabled(false);
+            userView.getBtnUbah().setEnabled(true);
+            userView.getBtnHapus().setEnabled(true);
+        }
+    }
+    
+    public void ubah(){
+        String nip = String.valueOf(userView.getTxtNIP().getText());
+        userModel.setNIP(nip);
+        String nama = String.valueOf(userView.getTxtNama().getText());
+        userModel.setNama(nama);
+        String jabatan = String.valueOf(userView.getTxaJabatan().getText());
+        userModel.setJabatan(jabatan);
+        String username = String.valueOf(userView.getTxtUsername().getText());
+        userModel.setUsername(username);
+        String password = String.valueOf(userView.getTxtPassword().getText());
+        userModel.setPassword(password);
+        String hakAkses = String.valueOf(userView.getCboHakAkses().getSelectedItem().toString());
+        userModel.setHakAkses(hakAkses);
+        if((nip.isEmpty())|(nama.isEmpty())|(jabatan.isEmpty())|(username.isEmpty())|(password.isEmpty())|
+          (hakAkses.isEmpty())){
+            JOptionPane.showMessageDialog(userView, "Silahkan Lengkapi Identitas Anda");
+        }else{
+            int hasil = JOptionPane.showConfirmDialog(userView, "Apakah anda yakin memperbaharui atau"
+           +" mengubah data tersebut"+" "+userView.getTxtNIP().getText() ,"PERHATIAN", JOptionPane.YES_NO_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+            getDaoStaff().ubah(userModel);
+            userView.getBtnSimpan().setEnabled(true);
+            userView.getBtnUbah().setEnabled(false);
+            userView.getBtnHapus().setEnabled(true);
+          }else if(hasil==JOptionPane.NO_OPTION){
+          }
+        }
+    }
+    
+    public void hapus(){
+        String nip = String.valueOf(userView.getTxtNIP().getText());
+        userModel.setNIP(nip);
+        
+        if(nip.isEmpty()){
+            JOptionPane.showMessageDialog(userView, "Silahkan Masukan nip anda");
+        }else{
+             int hasil = JOptionPane.showConfirmDialog(userView, "Apakah anda yakin menghapus data tersebut"
+           +" "+userView.getTxtNIP(), "PERHATIAN", JOptionPane.YES_NO_CANCEL_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+                getDaoStaff().hapus(nip);
+                setEditOff();
+           }else if(hasil==JOptionPane.NO_OPTION){
+           }
+        }
+    }
+    
+    
+    public void kosong(){
+        userView.getTxtNIP().setText("");
+        userView.getTxtNama().setText("");
+        userView.getTxaJabatan().setText("");
+        userView.getTxtUsername().setText("");
+        userView.getTxtPassword().setText("");
+        userView.getCboHakAkses().setSelectedIndex(0);
+    }
+    
+    public void setEditOff(){
+        userView.getTxtNIP().setEnabled(false);
+        userView.getTxtNama().setEnabled(false);
+        userView.getTxaJabatan().setEnabled(false);
+        userView.getTxtUsername().setEnabled(false);
+        userView.getTxtPassword().setEnabled(false);
+        userView.getCboHakAkses().setEnabled(false);
+        userView.getBtnSimpan().setEnabled(false);
+        userView.getBtnUbah().setEnabled(false);
+        userView.getBtnHapus().setEnabled(false);
+    }
+    
+    public void setEditOn(){
+        userView.getTxtNIP().setEnabled(true);
+        userView.getTxtNama().setEnabled(true);
+        userView.getTxaJabatan().setEnabled(true);
+        userView.getTxtUsername().setEnabled(true);
+        userView.getTxtPassword().setEnabled(true);
+        userView.getCboHakAkses().setEnabled(true);
+    }
+    
+    public void dataTabel(){
+    daftarUserModel = getDaoStaff().getCariData(userView.getTxtCari().getText());
+    user_table_model userTableModel = new user_table_model(daftarUserModel);
+    userView.getTabel().setModel(userTableModel);
+    }
+    
+    public void cari(){
+        if(!userView.getTxtCari().getText().trim().isEmpty()){
+            getDaoStaff().getCariData(userView.getTxtCari().getText());
+            dataTabel();
+        }else{
+            JOptionPane.showMessageDialog(userView, "Silakan Masukan NIP dan tekan tombol pencarian");
+        }
+    }
+    
+    public void kontenTabel(){
+        daftarUserModel = getDaoStaff().getDaftar();
+        user_table_model userTableModel = new user_table_model(daftarUserModel);
+        userView.getTabel().setModel(userTableModel);
+    }
+    
+    public void kontenBarisData(int baris){
+        userView.getTxtNIP().setText(String.valueOf(daftarUserModel.get(baris).getNIP()));
+        userView.getTxtNama().setText(String.valueOf(daftarUserModel.get(baris).getNama()));
+        userView.getTxaJabatan().setText(String.valueOf(daftarUserModel.get(baris).getJabatan()));
+        userView.getTxtUsername().setText(String.valueOf(daftarUserModel.get(baris).getUsername()));
+        userView.getTxtPassword().setText(String.valueOf(daftarUserModel.get(baris).getPassword()));
+        userView.getCboHakAkses().setSelectedItem(String.valueOf(daftarUserModel.get(baris).getHakAkses()));
+    }
+}
