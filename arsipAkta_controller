@@ -1,0 +1,522 @@
+package controller;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import DAO.DAO_ArsipAkta;
+import model.arsipAkta_model;
+import model.arsipAkta_table_model;
+import view.arsipAkta_View;
+import view.cetakArsipAkta;
+import java.util.List;
+import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
+
+public class arsipAkta_controller {
+    private static DAO_ArsipAkta DAOArsipAkta;
+    public arsipAkta_model arsipAktaModel = new arsipAkta_model();
+    public List<arsipAkta_model> daftarArsipModel;
+    private arsipAkta_View arsipAktaView;
+    private cetakArsipAkta cetakArsip;
+    
+    public arsipAkta_controller(arsipAkta_View arsipAkta){
+        DAOArsipAkta = new DAO_ArsipAkta();
+        this.arsipAktaView=arsipAkta;
+    }
+    
+    public arsipAkta_controller(cetakArsipAkta cetak){
+        DAOArsipAkta = new DAO_ArsipAkta();
+        this.cetakArsip=cetak;
+    }
+    
+    public static DAO_ArsipAkta getDaoArsipAkta(){
+        return DAOArsipAkta;
+    }
+    
+    public void simpan(){
+        String form = "";
+        if(arsipAktaView.getCboFormKelahiran().isSelected()){
+            form = "Surat Keterangan Kelahiran";
+        }else if(arsipAktaView.getCboFormKematian().isSelected()){
+            form = "Formulir Pelaporan Kematian";
+        }else{}
+        
+        String kode = String.valueOf(arsipAktaView.getTxtKode().getText());
+        arsipAktaModel.setKode(kode );
+        String noBerkas = String.valueOf(arsipAktaView.getTxtNoBerkas().getText());
+        arsipAktaModel.setNoBerkas(noBerkas);
+        String tglBerkas = String.valueOf(arsipAktaView.getTxtTanggalBerkas().getDateFormatString());
+        arsipAktaModel.setTanggalBerkas(tglBerkas);
+        String kategori = String.valueOf(arsipAktaView.getCboKategori().getSelectedItem().toString());
+        arsipAktaModel.setKategori(kategori);
+        String lampiran = form;
+        arsipAktaModel.setLampiran(lampiran);
+        String ket = String.valueOf(arsipAktaView.getTxaKeterangan().getText());
+        arsipAktaModel.setKeterangan(ket);
+        String noAL = String.valueOf(arsipAktaView.getCboNoAL().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaLahir(noAL);
+        String nikAL = String.valueOf(arsipAktaView.getTxtNIKAL().getText());
+        arsipAktaModel.setNIKAktaLahir(nikAL);
+        String tempTerbitAL =  String.valueOf(arsipAktaView.getTxtTempAL().getText());
+        arsipAktaModel.setTempatTerbitAktaLahir(tempTerbitAL);
+        String tglTerbitAL = String.valueOf(arsipAktaView.getTxtTglTerbitAL().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaLahir(tglTerbitAL);
+        String thnTerbitAL = String.valueOf(arsipAktaView.getTxtThnTerbitAL().getText());
+        arsipAktaModel.setTahunTerbitAktaLahir(thnTerbitAL);
+        String noAM = String.valueOf(arsipAktaView.getCboNoAM().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaMati(noAM);
+        String nikAM = String.valueOf(arsipAktaView.getTxtNIKAM().getText());
+        arsipAktaModel.setNIKAktaMati(nikAM);
+        String tempTerbitAM =  String.valueOf(arsipAktaView.getTxtTempAM().getText());
+        arsipAktaModel.setTempatTerbitAktaMati(tempTerbitAM);
+        String tglTerbitAM = String.valueOf(arsipAktaView.getTxtTglTerbitAM().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaMati(tglTerbitAM);
+        String thnTerbitAM = String.valueOf(arsipAktaView.getTxtThnTerbitAM().getText());
+        arsipAktaModel.setTahunTerbitAktaMati(thnTerbitAM);
+        String noAK = String.valueOf(arsipAktaView.getCboNoAK().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaKawin(noAK);
+        String nikAK = String.valueOf(arsipAktaView.getTxtNIKAK().getText());
+        arsipAktaModel.setNIKAktaKawin(nikAK);
+        String tempTerbitAK =  String.valueOf(arsipAktaView.getTxtTempAK().getText());
+        arsipAktaModel.setTempatTerbitAktaKawin(tempTerbitAK);
+        String tglTerbitAK = String.valueOf(arsipAktaView.getTxtTglTerbitAK().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaKawin(tglTerbitAK);
+        String thnTerbitAK = String.valueOf(arsipAktaView.getTxtThnTerbitAK().getText());
+        arsipAktaModel.setTahunTerbitAktaKawin(thnTerbitAK);
+        String noAC = String.valueOf(arsipAktaView.getCboNoAC().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaCerai(noAC);
+        String nikAC = String.valueOf(arsipAktaView.getTxtNIKAC().getText());
+        arsipAktaModel.setNIKAktaCerai(nikAC);
+        String tempTerbitAC =  String.valueOf(arsipAktaView.getTxtTempAC().getText());
+        arsipAktaModel.setTempatTerbitAktaCerai(tempTerbitAC);
+        String tglTerbitAC = String.valueOf(arsipAktaView.getTxtTglTerbitAC().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaCerai(tglTerbitAC);
+        String thnTerbitAC = String.valueOf(arsipAktaView.getTxtThnTerbitAC().getText());
+        arsipAktaModel.setTahunTerbitAktaCerai(thnTerbitAC);
+        if((kode.isEmpty())&(noBerkas.isEmpty())&(tglBerkas.isEmpty())&(kategori.isEmpty())&(ket.isEmpty())&(noAL.isEmpty())&
+          (nikAL.isEmpty())&(tempTerbitAL.isEmpty())&(tglTerbitAL.isEmpty())&(thnTerbitAL.isEmpty())&(noAM.isEmpty())&
+          (nikAM.isEmpty())&(tempTerbitAM.isEmpty())&(tglTerbitAL.isEmpty())&(thnTerbitAM.isEmpty())&(noAK.isEmpty())&
+          (nikAK.isEmpty())&(tempTerbitAK.isEmpty())&(tglTerbitAK.isEmpty()&(thnTerbitAK.isEmpty()&(noAC.isEmpty())&
+          (nikAC.isEmpty())&(tempTerbitAC.isEmpty())&(tglTerbitAC.isEmpty())&(thnTerbitAC.isEmpty())|(lampiran.isEmpty())))){
+            JOptionPane.showMessageDialog(arsipAktaView, "Silahkan Lengkapi data arsip");
+            arsipAktaView.getBtnSimpan().setEnabled(true);
+        }else{
+            getDaoArsipAkta().simpan(arsipAktaModel);
+            arsipAktaView.getBtnUbah().setEnabled(true);
+            arsipAktaView.getBtnHapus().setEnabled(true);
+            kosong();
+            kontenTabel();
+        }
+    }
+    
+    public void ubah(){
+        String form = "";
+        if(arsipAktaView.getCboFormKelahiran().isSelected()){
+            form = "Surat Keterangan Kelahiran";
+        }else if(arsipAktaView.getCboFormKematian().isSelected()){
+            form = "Formulir Pelaporan Kematian";
+        }else{}
+        
+        String kode = String.valueOf(arsipAktaView.getTxtKode().getText());
+        arsipAktaModel.setKode(kode );
+        String noBerkas = String.valueOf(arsipAktaView.getTxtNoBerkas().getText());
+        arsipAktaModel.setNoBerkas(noBerkas);
+        String tglBerkas = String.valueOf(arsipAktaView.getTxtTanggalBerkas().getDateFormatString());
+        arsipAktaModel.setTanggalBerkas(tglBerkas);
+        String kategori = String.valueOf(arsipAktaView.getCboKategori().getSelectedItem().toString());
+        arsipAktaModel.setKategori(kategori);
+        String lampiran = form;
+        arsipAktaModel.setLampiran(lampiran);
+        String ket = String.valueOf(arsipAktaView.getTxaKeterangan().getText());
+        arsipAktaModel.setKeterangan(ket);
+        String noAL = String.valueOf(arsipAktaView.getCboNoAL().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaLahir(noAL);
+        String nikAL = String.valueOf(arsipAktaView.getTxtNIKAL().getText());
+        arsipAktaModel.setNIKAktaLahir(nikAL);
+        String tempTerbitAL =  String.valueOf(arsipAktaView.getTxtTempAL().getText());
+        arsipAktaModel.setTempatTerbitAktaLahir(tempTerbitAL);
+        String tglTerbitAL = String.valueOf(arsipAktaView.getTxtTglTerbitAL().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaLahir(tglTerbitAL);
+        String thnTerbitAL = String.valueOf(arsipAktaView.getTxtThnTerbitAL().getText());
+        arsipAktaModel.setTahunTerbitAktaLahir(thnTerbitAL);
+        String noAM = String.valueOf(arsipAktaView.getCboNoAM().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaMati(noAM);
+        String nikAM = String.valueOf(arsipAktaView.getTxtNIKAM().getText());
+        arsipAktaModel.setNIKAktaMati(nikAM);
+        String tempTerbitAM =  String.valueOf(arsipAktaView.getTxtTempAM().getText());
+        arsipAktaModel.setTempatTerbitAktaMati(tempTerbitAM);
+        String tglTerbitAM = String.valueOf(arsipAktaView.getTxtTglTerbitAM().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaMati(tglTerbitAM);
+        String thnTerbitAM = String.valueOf(arsipAktaView.getTxtThnTerbitAM().getText());
+        arsipAktaModel.setTahunTerbitAktaMati(thnTerbitAM);
+        String noAK = String.valueOf(arsipAktaView.getCboNoAK().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaLahir(noAK);
+        String nikAK = String.valueOf(arsipAktaView.getTxtNIKAK().getText());
+        arsipAktaModel.setNIKAktaKawin(nikAK);
+        String tempTerbitAK =  String.valueOf(arsipAktaView.getTxtTempAK().getText());
+        arsipAktaModel.setTempatTerbitAktaKawin(tempTerbitAK);
+        String tglTerbitAK = String.valueOf(arsipAktaView.getTxtTglTerbitAK().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaKawin(tglTerbitAK);
+        String thnTerbitAK = String.valueOf(arsipAktaView.getTxtThnTerbitAK().getText());
+        arsipAktaModel.setTahunTerbitAktaKawin(thnTerbitAK);
+        String noAC = String.valueOf(arsipAktaView.getCboNoAC().getSelectedItem().toString());
+        arsipAktaModel.setNoAktaCerai(noAC);
+        String nikAC = String.valueOf(arsipAktaView.getTxtNIKAC().getText());
+        arsipAktaModel.setNIKAktaCerai(nikAC);
+        String tempTerbitAC =  String.valueOf(arsipAktaView.getTxtTempAC().getText());
+        arsipAktaModel.setTempatTerbitAktaCerai(tempTerbitAC);
+        String tglTerbitAC = String.valueOf(arsipAktaView.getTxtTglTerbitAC().getText());
+        arsipAktaModel.setTanggalBulanTerbitAktaCerai(tglTerbitAC);
+        String thnTerbitAC = String.valueOf(arsipAktaView.getTxtThnTerbitAC().getText());
+        arsipAktaModel.setTahunTerbitAktaCerai(thnTerbitAC);
+        if((kode.isEmpty())&(noBerkas.isEmpty())&(tglBerkas.isEmpty())&(kategori.isEmpty())&(ket.isEmpty())&(noAL.isEmpty())&
+          (nikAL.isEmpty())&(tglTerbitAL.isEmpty())&(thnTerbitAL.isEmpty())&(noAM.isEmpty())&(nikAM.isEmpty())&(tempTerbitAL.isEmpty())&
+          (noAK.isEmpty())&(nikAK.isEmpty())&(tempTerbitAK.isEmpty())&(tglTerbitAK.isEmpty()&(thnTerbitAK.isEmpty()&(noAC.isEmpty())&
+          (nikAC.isEmpty())&(tempTerbitAC.isEmpty())&(tglTerbitAC.isEmpty())&(thnTerbitAC.isEmpty())|(lampiran.isEmpty())))){
+            JOptionPane.showMessageDialog(arsipAktaView, "Silahkan Lengkapi Data Arsip");
+        }else{
+            int hasil = JOptionPane.showConfirmDialog(arsipAktaView, "Apakah anda yakin memperbaharui atau"
+           +" mengubah data tersebut"+" "+arsipAktaView.getTxtKode().getText() ,"PERHATIAN", JOptionPane.YES_NO_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+            getDaoArsipAkta().ubah(arsipAktaModel);
+            arsipAktaView.getBtnSimpan().setEnabled(false);
+            arsipAktaView.getBtnUbah().setEnabled(false);
+            arsipAktaView.getBtnHapus().setEnabled(true);
+          }else if(hasil==JOptionPane.NO_OPTION){
+          }
+        }
+    }
+    
+    public void hapus(){
+        String kode = String.valueOf(arsipAktaView.getTxtKode().getText());
+        arsipAktaModel.setKode(kode);
+        
+        if(kode.isEmpty()){
+            JOptionPane.showMessageDialog(arsipAktaView, "Silahkan Masukan nip anda");
+        }else{
+             int hasil = JOptionPane.showConfirmDialog(arsipAktaView, "Apakah anda yakin menghapus data tersebut"
+           +" "+arsipAktaView.getTxtKode().getText(), "PERHATIAN", JOptionPane.YES_NO_CANCEL_OPTION);
+           if(hasil==JOptionPane.YES_OPTION){
+                getDaoArsipAkta().hapus(kode);
+                setEditOff();
+           }else if(hasil==JOptionPane.NO_OPTION){
+           }
+        }
+    }
+    
+   public void autoKode(){
+       getDaoArsipAkta().tampilKode(arsipAktaView);
+   }
+   
+    public void kategoriAkta(){
+        String kategori = arsipAktaView.getCboKategori().getSelectedItem().toString();
+     
+        switch(kategori){
+            case "Akta Kelahiran":
+                 getDaoArsipAkta().tampilNoAktaLahir(arsipAktaView);
+                 arsipAktaView.getCboNoAL().setEnabled(true);
+                 arsipAktaView.getCboNoAM().setEnabled(false);
+                 arsipAktaView.getCboNoAK().setEnabled(false);
+                 arsipAktaView.getCboNoAC().setEnabled(false);
+                 arsipAktaView.getCboFormKelahiran().setEnabled(true);
+                 arsipAktaView.getCboFormKematian().setEnabled(false);
+                 kosongAM();
+                 kosongAK();
+                 kosongAC();
+                break;
+            case "Akta Kematian":
+                 getDaoArsipAkta().tampilNoAktaMati(arsipAktaView);
+                 arsipAktaView.getCboNoAL().setEnabled(false);
+                 arsipAktaView.getCboNoAM().setEnabled(true);
+                 arsipAktaView.getCboNoAK().setEnabled(false);
+                 arsipAktaView.getCboNoAC().setEnabled(false);
+                 arsipAktaView.getCboFormKelahiran().setEnabled(false);
+                 arsipAktaView.getCboFormKematian().setEnabled(true);
+                 kosongAL();
+                 kosongAK();
+                 kosongAC();
+                break;
+            case "Akta Perkawinan":
+                getDaoArsipAkta().tampilNoAktKawin(arsipAktaView);
+                arsipAktaView.getCboNoAL().setEnabled(false);
+                arsipAktaView.getCboNoAM().setEnabled(false);
+                arsipAktaView.getCboNoAK().setEnabled(true);
+                arsipAktaView.getCboNoAC().setEnabled(false);
+                arsipAktaView.getCboFormKelahiran().setEnabled(false);
+                arsipAktaView.getCboFormKematian().setEnabled(false);
+                kosongAL();
+                kosongAM();
+                kosongAC();
+                break;
+            case "Akta Perceraian":
+                getDaoArsipAkta().tampilNoAktaCerai(arsipAktaView);
+                arsipAktaView.getCboNoAL().setEnabled(false);
+                arsipAktaView.getCboNoAM().setEnabled(false);
+                arsipAktaView.getCboNoAK().setEnabled(false);
+                arsipAktaView.getCboNoAC().setEnabled(true);
+                arsipAktaView.getCboFormKelahiran().setEnabled(false);
+                arsipAktaView.getCboFormKematian().setEnabled(false);
+                kosongAL();
+                kosongAM();
+                kosongAK();
+                break;
+            default: 
+        }
+     }
+    
+    public void tampilItemAL(){
+        try {
+            getDaoArsipAkta().tampilItemAL(arsipAktaView);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(arsipAktaView, e);
+        }
+       
+    } 
+    
+    public void tampilItemAM(){
+        try {
+            getDaoArsipAkta().tampilItemAM(arsipAktaView);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(arsipAktaView, e);
+        }
+    }
+    
+    public void tampilItemAK(){
+        try {
+            getDaoArsipAkta().tampilItemAK(arsipAktaView);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(arsipAktaView, e);
+        }
+    }
+    
+    public void tampilItemAC(){
+        try {
+            getDaoArsipAkta().tampilItemAC(arsipAktaView);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(arsipAktaView, e);
+        }
+        
+    }
+   
+    public void tanggal(String tanggal){
+        if(arsipAktaView.getTxtTanggalBerkas().getDate()!=null){
+            SimpleDateFormat formatTanggal = new SimpleDateFormat("yyyy-MM-dd");
+            tanggal = formatTanggal.format(arsipAktaView.getTxtTanggalBerkas().getDate());
+            arsipAktaView.getTxtTanggalBerkas().setDateFormatString(tanggal);
+        }
+    }
+    
+    public void kosong(){
+        //arsipAktaView.getTxtKode().setText("");
+        arsipAktaView.getTxtNoBerkas().setText("");
+        //arsipAktaView.getTxtTanggalBerkas().setDateFormatString("0000-00-00");
+        //arsipAktaView.getCboKategori().setSelectedIndex(0);
+        arsipAktaView.getTxaKeterangan().setText("");
+        kosongAL();
+        kosongAM();
+        kosongAK();
+        kosongAC();
+    }
+    
+    public void kosongAL(){
+        arsipAktaView.getCboNoAL().setSelectedIndex(0);
+        arsipAktaView.getTxtNIKAL().setText("kosong");
+        arsipAktaView.getTxtTempAL().setText("kosong");
+        arsipAktaView.getTxtTglTerbitAL().setText("kosong");
+        arsipAktaView.getTxtThnTerbitAL().setText("kosong");
+        arsipAktaView.getCboFormKelahiran().setSelected(true);
+        arsipAktaView.getCboFormKematian().setSelected(false);
+    }
+    
+    public void kosongAM(){
+        arsipAktaView.getCboNoAM().setSelectedIndex(0);
+        arsipAktaView.getTxtNIKAM().setText("kosong");
+        arsipAktaView.getTxtTempAM().setText("kosong");
+        arsipAktaView.getTxtTglTerbitAM().setText("kosong");
+        arsipAktaView.getTxtThnTerbitAM().setText("kosong");
+        arsipAktaView.getCboFormKelahiran().setSelected(false);
+        arsipAktaView.getCboFormKematian().setSelected(true);
+    }
+    
+    public void kosongAK(){
+        arsipAktaView.getCboNoAK().setSelectedIndex(0);
+        arsipAktaView.getTxtNIKAK().setText("kosong");
+        arsipAktaView.getTxtTempAK().setText("kosong");
+        arsipAktaView.getTxtTglTerbitAK().setText("kosong");
+        arsipAktaView.getTxtThnTerbitAK().setText("kosong");
+        arsipAktaView.getCboFormKelahiran().setSelected(false);
+        arsipAktaView.getCboFormKematian().setSelected(false);
+    }
+    
+    public void kosongAC(){
+        arsipAktaView.getCboNoAC().setSelectedIndex(0);
+        arsipAktaView.getTxtNIKAC().setText("kosong");
+        arsipAktaView.getTxtTempAC().setText("kosong");
+        arsipAktaView.getTxtTglTerbitAC().setText("kosong");
+        arsipAktaView.getTxtThnTerbitAC().setText("kosong");
+        arsipAktaView.getCboFormKelahiran().setSelected(false);
+        arsipAktaView.getCboFormKematian().setSelected(false);
+    }
+    
+    public void setEditOff(){
+        arsipAktaView.getTxtKode().setEnabled(false);
+        arsipAktaView.getTxtNoBerkas().setEnabled(false);
+        arsipAktaView.getTxtTanggalBerkas().setEnabled(false);
+        arsipAktaView.getCboKategori().setEnabled(false);
+        arsipAktaView.getTxaKeterangan().setEnabled(false);
+        arsipAktaView.getCboNoAL().setEnabled(false);
+        arsipAktaView.getTxtNIKAL().setEnabled(false);
+        arsipAktaView.getTxtTempAL().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAL().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAL().setEnabled(false);
+        arsipAktaView.getCboNoAM().setEnabled(false);
+        arsipAktaView.getTxtNIKAM().setEnabled(false);
+        arsipAktaView.getTxtTempAM().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAM().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAM().setEnabled(false);
+        arsipAktaView.getCboNoAK().setEnabled(false);
+        arsipAktaView.getTxtNIKAK().setEnabled(false);
+        arsipAktaView.getTxtTempAK().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAK().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAK().setEnabled(false);
+        arsipAktaView.getCboNoAC().setEnabled(false);
+        arsipAktaView.getTxtNIKAC().setEnabled(false);
+        arsipAktaView.getTxtTempAC().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAC().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAC().setEnabled(false);
+        arsipAktaView.getTxtTotal().setEnabled(false);
+        arsipAktaView.getCboFormKelahiran().setEnabled(false);
+        arsipAktaView.getCboFormKematian().setEnabled(false);
+        arsipAktaView.getBtnCari().setEnabled(false);
+        arsipAktaView.getBtnSimpan().setEnabled(false);
+        arsipAktaView.getBtnUbah().setEnabled(false);
+        arsipAktaView.getBtnHapus().setEnabled(false);
+    }
+    
+    public void setEditOn(){
+        arsipAktaView.getTxtNoBerkas().setEnabled(true);
+        arsipAktaView.getTxtTanggalBerkas().setEnabled(true);
+        arsipAktaView.getCboKategori().setEnabled(true);
+        arsipAktaView.getTxaKeterangan().setEnabled(true);
+        arsipAktaView.getCboNoAL().setEnabled(false);
+        arsipAktaView.getTxtNIKAL().setEnabled(false);
+        arsipAktaView.getTxtTempAL().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAL().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAL().setEnabled(false);
+        arsipAktaView.getCboNoAM().setEnabled(false);
+        arsipAktaView.getTxtNIKAM().setEnabled(false);
+        arsipAktaView.getTxtTempAM().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAM().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAM().setEnabled(false);
+        arsipAktaView.getCboNoAK().setEnabled(false);
+        arsipAktaView.getTxtNIKAK().setEnabled(false);
+        arsipAktaView.getTxtTempAK().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAK().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAK().setEnabled(false);
+        arsipAktaView.getCboNoAC().setEnabled(false);
+        arsipAktaView.getTxtNIKAC().setEnabled(false);
+        arsipAktaView.getTxtTempAC().setEnabled(false);
+        arsipAktaView.getTxtTglTerbitAC().setEnabled(false);
+        arsipAktaView.getTxtThnTerbitAC().setEnabled(false);
+        arsipAktaView.getTxtTotal().setEnabled(true);
+        arsipAktaView.getBtnCari().setEnabled(true);
+        arsipAktaView.getBtnSimpan().setEnabled(true);
+        arsipAktaView.getBtnUbah().setEnabled(true);
+        arsipAktaView.getBtnHapus().setEnabled(true);
+    }
+    
+    public void dataTabel(){
+    daftarArsipModel = getDaoArsipAkta().getCariData(arsipAktaView.getTxtCari().getText());
+    arsipAkta_table_model arsipTableModel = new arsipAkta_table_model(daftarArsipModel);
+    arsipAktaView.getTabel().setModel(arsipTableModel);
+    }
+    
+    public void cari(){
+        if(!arsipAktaView.getTxtCari().getText().trim().isEmpty()){
+            getDaoArsipAkta().getCariData(arsipAktaView.getTxtCari().getText());
+            dataTabel();
+        }else{
+            JOptionPane.showMessageDialog(arsipAktaView, "Silakan Masukan NIP dan tekan tombol pencarian");
+        }
+    }
+    
+    public void kontenTabel(){
+        daftarArsipModel = getDaoArsipAkta().getDaftar();
+        arsipAkta_table_model arsipTableModel = new arsipAkta_table_model(daftarArsipModel);
+        arsipAktaView.getTabel().setModel(arsipTableModel);
+    }
+    
+    public void kontenBarisData(int baris){
+        arsipAktaView.getTxtKode().setText(String.valueOf(daftarArsipModel.get(baris).getKode()));
+        arsipAktaView.getTxtNoBerkas().setText(String.valueOf(daftarArsipModel.get(baris).getNoBerkas()));
+        arsipAktaView.getTxtTanggalBerkas().setDateFormatString(String.valueOf(daftarArsipModel.get(baris).getTanggalBerkas()));
+        arsipAktaView.getCboKategori().setSelectedItem(String.valueOf(daftarArsipModel.get(baris).getKategori()));
+        arsipAktaView.getTxaKeterangan().setText(String.valueOf(daftarArsipModel.get(baris).getKeterangan()));
+        arsipAktaView.getCboNoAL().setSelectedItem(String.valueOf(daftarArsipModel.get(baris).getNoAktaLahir()));
+        arsipAktaView.getTxtNIKAL().setText(String.valueOf(daftarArsipModel.get(baris).getNIKAktaLahir()));
+        arsipAktaView.getTxtTempAL().setText(String.valueOf(daftarArsipModel.get(baris).getTempatTerbitAktaLahir()));
+        arsipAktaView.getTxtTglTerbitAL().setText(String.valueOf(daftarArsipModel.get(baris).getTanggalBulanTerbitAktaLahir()));
+        arsipAktaView.getTxtThnTerbitAL().setText(String.valueOf(daftarArsipModel.get(baris).getTahunTerbitAktaLahir()));
+        arsipAktaView.getCboNoAM().setSelectedItem(String.valueOf(daftarArsipModel.get(baris).getNoAktaMati()));
+        arsipAktaView.getTxtNIKAM().setText(String.valueOf(daftarArsipModel.get(baris).getNIKAktaMati()));
+        arsipAktaView.getTxtTempAM().setText(String.valueOf(daftarArsipModel.get(baris).getTempatTerbitAktaMati()));
+        arsipAktaView.getTxtTglTerbitAM().setText(String.valueOf(daftarArsipModel.get(baris).getTanggalBulanTerbitAktaMati()));
+        arsipAktaView.getTxtThnTerbitAM().setText(String.valueOf(daftarArsipModel.get(baris).getTahunTerbitAktaMati()));
+        arsipAktaView.getCboNoAK().setSelectedItem(String.valueOf(daftarArsipModel.get(baris).getNoAktaKawin()));
+        arsipAktaView.getTxtNIKAK().setText(String.valueOf(daftarArsipModel.get(baris).getNIKAktaKawin()));
+        arsipAktaView.getTxtTempAK().setText(String.valueOf(daftarArsipModel.get(baris).getTempatTerbitAktaKawin()));
+        arsipAktaView.getTxtTglTerbitAK().setText(String.valueOf(daftarArsipModel.get(baris).getTanggalBulanTerbitAktaKawin()));
+        arsipAktaView.getTxtThnTerbitAK().setText(String.valueOf(daftarArsipModel.get(baris).getTahunTerbitAktaKawin()));
+        arsipAktaView.getCboNoAC().setSelectedItem(String.valueOf(daftarArsipModel.get(baris).getNoAktaCerai()));
+        arsipAktaView.getTxtNIKAC().setText(String.valueOf(daftarArsipModel.get(baris).getNIKAktaCerai()));
+        arsipAktaView.getTxtTempAC().setText(String.valueOf(daftarArsipModel.get(baris).getTempatTerbitAktaCerai()));
+        arsipAktaView.getTxtTglTerbitAC().setText(String.valueOf(daftarArsipModel.get(baris).getTanggalBulanTerbitAktaCerai()));
+        arsipAktaView.getTxtThnTerbitAC().setText(String.valueOf(daftarArsipModel.get(baris).getTahunTerbitAktaCerai()));
+    }
+    
+    public void jumlahBarisTabel(int baris){
+        baris=arsipAktaView.getTabel().getRowCount();
+        arsipAktaView.getTxtTotal().setText(String.valueOf(baris));
+    }
+    
+    public void cetakAL(){
+        String kode = String.valueOf(cetakArsip.getTxtKode().getText());
+        arsipAktaModel.setKode(kode);
+        if(kode.isEmpty()){
+            JOptionPane.showMessageDialog(cetakArsip, "silahkan masukan kode");
+        }
+        getDaoArsipAkta().cetakAL(cetakArsip);
+    }
+    
+    public void cetakAM(){
+        String kode = String.valueOf(cetakArsip.getTxtKode().getText());
+        arsipAktaModel.setKode(kode);
+        if(kode.isEmpty()){
+            JOptionPane.showMessageDialog(cetakArsip, "silahkan masukan kode");
+        }
+        getDaoArsipAkta().cetakAM(cetakArsip);
+    }
+    
+    public void cetakAK(){
+        String kode = String.valueOf(cetakArsip.getTxtKode().getText());
+        arsipAktaModel.setKode(kode);
+        if(kode.isEmpty()){
+            JOptionPane.showMessageDialog(cetakArsip, "silahkan masukan kode");
+        }
+        getDaoArsipAkta().cetakAK(cetakArsip);
+    }
+    
+    public void cetakAC(){
+        String kode = String.valueOf(cetakArsip.getTxtKode().getText());
+        arsipAktaModel.setKode(kode);
+        if(kode.isEmpty()){
+            JOptionPane.showMessageDialog(cetakArsip, "silahkan masukan kode");
+        }
+        getDaoArsipAkta().cetakAC(cetakArsip);
+    }
+    
+    public void bacaKode(){
+        getDaoArsipAkta().bacaNoAL(cetakArsip);
+    }
+}
