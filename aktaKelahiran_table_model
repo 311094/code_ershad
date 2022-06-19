@@ -1,0 +1,109 @@
+package model;
+
+/**
+ *
+ * @author ERSHAD RADIANSYAH
+ */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collection;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+
+public class aktaKelahiran_table_model extends AbstractTableModel{
+    
+    List<aktaKelahiran_model> daftarAktaKelahiran = new ArrayList<>();
+    DefaultTableModel tabelModel;
+    
+    public aktaKelahiran_table_model(List<aktaKelahiran_model> daftarAktaKelahiran){
+        this.daftarAktaKelahiran=daftarAktaKelahiran;
+    }
+    
+    private final String Header[]={"CSL","NIK","Warga Negara","No","stbld","Tempat Lahir",
+                                   "Tanggal Bulan Lahir","Tahun Lahir","Nama Anak","Anak Ke","Jenis Kelamin",
+                                   "Nama Ayah Kandung","Nama Ibu Kandung","Daerah Penerbitan Akta Lahir",
+                                   "Tanggal Bulan Penerbitan Akta Lahir","Tahun Penerbitan Akta Lahir","Jabatan","Nama Pejabat",
+                                   "NIP"};
+    
+    public void setData(Collection<aktaKelahiran_model> kolesi){
+        this.daftarAktaKelahiran.addAll(kolesi);
+        fireTableDataChanged();
+        tabelModel.getDataVector().removeAll(kolesi);
+    }
+    
+    public void save(aktaKelahiran_model aktaKelahiranModel){
+        this.daftarAktaKelahiran.add(aktaKelahiranModel);
+        fireTableRowsInserted(getRowCount()-1, getRowCount()-1);
+    }
+    
+    public void edit(int indeks,aktaKelahiran_model aktaKelahiranModel){
+        this.daftarAktaKelahiran.set(indeks, aktaKelahiranModel);
+        fireTableRowsUpdated(indeks, indeks);
+    }
+    
+    public void delete(int indeks){
+        this.daftarAktaKelahiran.remove(indeks);
+        fireTableRowsDeleted(indeks, indeks);
+    }
+     
+    public aktaKelahiran_model findOne(int indeks){
+        return this.daftarAktaKelahiran.get(indeks);
+    }
+    
+    public String getColumnName(int kolom){
+        return this.Header[kolom];
+    }
+   
+    public Object getValueAt(int baris, int kolom){
+        switch(kolom){
+            case 0:
+                return this.daftarAktaKelahiran.get(baris).getNoAL();
+            case 1:
+                return this.daftarAktaKelahiran.get(baris).getNIK();
+            case 2:
+                return this.daftarAktaKelahiran.get(baris).getWargaNegara();
+            case 3:
+                return this.daftarAktaKelahiran.get(baris).getNo();
+            case 4:
+                return this.daftarAktaKelahiran.get(baris).getAturanStbld();
+            case 5:
+                return this.daftarAktaKelahiran.get(baris).getTempatLahir();
+            case 6:
+                return this.daftarAktaKelahiran.get(baris).getTanggalBulanLahir();
+            case 7:
+                return this.daftarAktaKelahiran.get(baris).getTahunLahir();
+            case 8:
+                return this.daftarAktaKelahiran.get(baris).getNamaAnak();
+            case 9:
+                return this.daftarAktaKelahiran.get(baris).getAnakKe();
+            case 10:
+                return this.daftarAktaKelahiran.get(baris).getJenisKelamin();
+            case 11:
+                return this.daftarAktaKelahiran.get(baris).getNamaSuami();
+            case 12:
+                return this.daftarAktaKelahiran.get(baris).getNamaIstri();
+            case 13:
+                return this.daftarAktaKelahiran.get(baris).getDaerahPembuatanAL();
+            case 14:
+                return this.daftarAktaKelahiran.get(baris).getTanggalBulanPembuatanAL();
+            case 15:
+                return this.daftarAktaKelahiran.get(baris).getTahunPembuatanAL();
+            case 16:
+                return this.daftarAktaKelahiran.get(baris).getJabatan();
+            case 17:
+                return this.daftarAktaKelahiran.get(baris).getNamaPejabat();
+            case 18:
+                return this.daftarAktaKelahiran.get(baris).getNip();
+            default:
+                return null;
+        }
+    }
+    
+    public int getColumnCount(){
+    return this.Header.length;
+    }
+    
+    public int getRowCount(){
+        return this.daftarAktaKelahiran.size();
+    }
+}
